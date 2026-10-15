@@ -1,5 +1,8 @@
 // 사이드 메뉴 구조 (DEC-011) — docs/development/02.PRD-FS-functional-spec.md FN-001 표 기준
 // 회차 주제는 가이드북 5.1, 17.4, 18.3, 19.4의 회기 설계 표 표기를 그대로 쓴다 (RULE-007)
+import careerJson from '@/content/types/career.json';
+import lifeJson from '@/content/types/life.json';
+import mentoringJson from '@/content/types/mentoring.json';
 
 export const COACHING_TYPES = ['career', 'mentoring', 'life'] as const;
 export type CoachingType = (typeof COACHING_TYPES)[number];
@@ -7,44 +10,20 @@ export type CoachingType = (typeof COACHING_TYPES)[number];
 export const STAGES = ['start', '1', '2', '3', '4', '5', 'follow-up'] as const;
 export type Stage = (typeof STAGES)[number];
 
-export const COACHING_TYPE_INFO: Record<CoachingType, { name: string; themes: Record<Stage, string> }> = {
-  career: {
-    name: '커리어 코칭',
-    themes: {
-      start: '연결·합의·방향 설정',
-      '1': '경험 자산과 현재 위치',
-      '2': '가치·강점·환경 조건',
-      '3': '미래 방향과 가설',
-      '4': '선택지·장애·실험',
-      '5': '자기주도 경력관리',
-      'follow-up': '후속 점검',
-    },
-  },
-  mentoring: {
-    name: '멘토링 코칭',
-    themes: {
-      start: '관계·기대·경계·목표',
-      '1': '나의 이야기와 현재 위치',
-      '2': '가치·강점·성장 기준',
-      '3': '미래 방향과 자원',
-      '4': '선택지·행동·도움 요청',
-      '5': '성장 통합·자립·종료',
-      'follow-up': '후속 점검',
-    },
-  },
-  life: {
-    name: '라이프 코칭',
-    themes: {
-      start: '연결·합의·방향 설정',
-      '1': '삶의 이야기와 현재 위치',
-      '2': '가치·강점·나다운 삶',
-      '3': '원하는 삶의 장면',
-      '4': '선택지·경계·실행',
-      '5': '통합·회복·지속',
-      'follow-up': '후속 점검',
-    },
-  },
+const TYPE_JSON: Record<CoachingType, { name: string; stages: Record<Stage, { theme: string }> }> = {
+  career: careerJson,
+  mentoring: mentoringJson,
+  life: lifeJson,
 };
+
+// 유형 이름·회차 주제는 content/types/*.json(가이드북 원문)에서 읽는다 — 한 곳에서만 관리
+export const COACHING_TYPE_INFO = Object.fromEntries(
+  COACHING_TYPES.map((type) => {
+    const guide = TYPE_JSON[type];
+    const themes = Object.fromEntries(STAGES.map((stage) => [stage, guide.stages[stage].theme])) as Record<Stage, string>;
+    return [type, { name: guide.name, themes }];
+  }),
+) as Record<CoachingType, { name: string; themes: Record<Stage, string> }>;
 
 export function stageTitle(stage: Stage): string {
   if (stage === 'start') return '시작 세션';

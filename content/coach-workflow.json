@@ -1,0 +1,39 @@
+{
+  "steps": [
+    {
+      "label": "세션 준비",
+      "description": "회차 가이드에서 목적·핵심 질문·추천 도구 확인",
+      "href": "/coaching/career/start"
+    },
+    {
+      "label": "세션 진행",
+      "description": "질문과 추천 도구 활용 (코칭 툴 나눔터)",
+      "href": "/tools"
+    },
+    {
+      "label": "코칭일지",
+      "description": "회기 종료 후 구글폼으로 작성",
+      "href": "/records/journal"
+    },
+    {
+      "label": "Between 안내",
+      "description": "고객이 선택한 관찰·실험 확인",
+      "href": "/program/overview#between"
+    },
+    {
+      "label": "종료 리포트",
+      "description": "마지막 회기 후 구글폼으로 작성",
+      "href": "/records/final-report"
+    },
+    {
+      "label": "종료소감",
+      "description": "코치 종료소감 작성, 피코치 종료소감 링크 전달",
+      "href": "/records/coach-reflection"
+    },
+    {
+      "label": "진행 확인",
+      "description": "대시보드에서 제출 현황 확인",
+      "href": "/dashboard"
+    }
+  ]
+}
