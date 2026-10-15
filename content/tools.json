@@ -1,0 +1,199 @@
+{
+  "source": "가이드북 27.2, 27.15",
+  "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/",
+  "tools": [
+    {
+      "id": "self-story",
+      "name": "자기 이야기·외재화",
+      "purpose": "문제와 사람 분리, 자기서사 탐색",
+      "timing": "시작 세션·1회기",
+      "stages": [
+        {
+          "stage": "start",
+          "level": "secondary"
+        },
+        {
+          "stage": "1",
+          "level": "primary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "dhb",
+      "name": "D-H-B",
+      "purpose": "행동·조건·존재방식의 균형 탐색",
+      "timing": "2회기",
+      "stages": [
+        {
+          "stage": "2",
+          "level": "primary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "life-curve",
+      "name": "Life Curve·Future Life Story",
+      "purpose": "과거 전환점과 원하는 미래 탐색",
+      "timing": "1·3회기",
+      "stages": [
+        {
+          "stage": "1",
+          "level": "primary"
+        },
+        {
+          "stage": "3",
+          "level": "primary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "life-wheel",
+      "name": "Life Wheel",
+      "purpose": "삶의 영역별 현재 인식과 우선순위",
+      "timing": "시작 세션·라이프 코칭",
+      "stages": [
+        {
+          "stage": "start",
+          "level": "primary"
+        },
+        {
+          "stage": "5",
+          "level": "secondary"
+        },
+        {
+          "stage": "follow-up",
+          "level": "secondary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "career-decision",
+      "name": "Career Decision Coaching",
+      "purpose": "진로 선택 기준과 탐색 방향",
+      "timing": "2~4회기",
+      "stages": [
+        {
+          "stage": "3",
+          "level": "secondary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "brave",
+      "name": "BRAVE",
+      "purpose": "제한적 믿음과 행동 실험",
+      "timing": "4회기",
+      "stages": [
+        {
+          "stage": "4",
+          "level": "primary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "emotion",
+      "name": "감정 알아차림·Naming",
+      "purpose": "감정 인식·수용·의미 탐색",
+      "timing": "전 회기",
+      "stages": [
+        {
+          "stage": "start",
+          "level": "primary"
+        },
+        {
+          "stage": "1",
+          "level": "secondary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "small-win",
+      "name": "자기결정성·Small Win",
+      "purpose": "자율성·유능감·관계성 기반 동기 강화",
+      "timing": "전 회기",
+      "stages": [
+        {
+          "stage": "2",
+          "level": "secondary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "self-care",
+      "name": "Self-Care·자기연민",
+      "purpose": "회복·자기돌봄·지속가능성",
+      "timing": "라이프 코칭",
+      "stages": [],
+      "types": [
+        "life"
+      ],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "mandarat",
+      "name": "Mandarat",
+      "purpose": "목표를 세부 행동·자원으로 확장",
+      "timing": "3~4회기",
+      "stages": [
+        {
+          "stage": "3",
+          "level": "secondary"
+        },
+        {
+          "stage": "4",
+          "level": "secondary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "resilience",
+      "name": "회복탄력성·성장 성찰",
+      "purpose": "어려움 이후 자원·배움·회복 탐색",
+      "timing": "4~5회기",
+      "stages": [
+        {
+          "stage": "5",
+          "level": "primary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    },
+    {
+      "id": "self-coaching",
+      "name": "Self-Coaching",
+      "purpose": "종료 후 자기질문과 성찰 체계화",
+      "timing": "5회기·Follow-up",
+      "stages": [
+        {
+          "stage": "5",
+          "level": "primary"
+        },
+        {
+          "stage": "follow-up",
+          "level": "primary"
+        }
+      ],
+      "types": [],
+      "hubUrl": "https://mkgreeme-web.github.io/CT-Sharing_Hub/"
+    }
+  ]
+}

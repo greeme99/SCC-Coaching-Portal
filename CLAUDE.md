@@ -22,9 +22,10 @@
 
 ## 2. 현재 상태
 
-**Summary:** Phase 1(앱 셸·접근 비밀번호·디자인 토큰·빈 화면 뼈대) 구현 완료. Phase 2부터 기능을 채운다.
+**Summary:** Phase 1(앱 셸·접근 비밀번호·디자인 토큰)과 Phase 2(프로그램 개요·코칭 회차 21개 화면·추천 도구) 구현 완료. 대시보드·일지·소감·나눔터·참조 자료실은 아직 뼈대 상태다.
 
-- Next.js 16.4 + React 19 + Tailwind CSS 4 + TypeScript. 각 화면은 "Phase N에서 구현 예정" 안내만 있는 뼈대 상태
+- Next.js 16.4 + React 19 + Tailwind CSS 4 + TypeScript
+- 가이드 콘텐츠는 `content/*.json`(가이드북 원문)에 있고 `lib/content.ts`로 읽는다. 문구를 고치면 `tests/unit/content.test.ts`가 가이드북 원문과 대조한다
 - **Next.js 16은 학습 데이터와 다를 수 있다.** 코드 작성 전 `node_modules/next/dist/docs/`의 해당 문서를 읽는다 (`AGENTS.md`). 예: middleware는 `proxy.ts`로 바뀜, `cacheComponents` 사용 중이라 `dynamicParams` 등 일부 설정 불가
 - 개발 문서 8종과 사이드바 정적 시안은 `docs/development/`에 있다 (인덱스: `docs/development/00.document-index.md`). 구현은 이 문서를 기준으로 한다
 - 참조 가이드북(§10)은 `docs/reference/`에 등록됨
@@ -69,14 +70,14 @@
 
 | 단계 | 주제 |
 |---|---|
-| 시작 세션 | _(가이드북 기준으로 기입)_ |
+| 시작 세션 | 연결·합의·방향 설정 (가이드북 7장, 30~45분) |
 | 1회기 | 현재 이야기·위치 |
 | 2회기 | 가치·강점 |
 | 3회기 | 미래 방향·이정표 |
 | 4회기 | 선택지 확장·탐색 |
 | 5회기 | 통합·지속 계획 |
 | Between N³ | Action Experiment, 관찰일지, 실행 회고 |
-| Follow-up | _(가이드북 기준으로 기입)_ |
+| Follow-up | 후속 점검 — 유지·수정·새로 선택 (종료 후 2~4주, 가이드북 1.5·5.1) |
 
 ³ Between Session: 회기와 회기 사이 기간. 고객이 실험·관찰을 수행하는 구간
 
@@ -201,7 +202,7 @@
 
 - **언어:** UI 문구는 한국어, 코드 식별자(변수·함수·테이블·API 경로)는 영어
 - **주석:** 한글 주석. "무엇"보다 "왜"를 적는다
-- **구조:** `app/`(화면·API), `components/`(공통 UI), `lib/`(로직·데이터), `content/`(가이드 콘텐츠, Phase 2), `styles/tokens.css`(색상 토큰 — hex 허용 유일 파일), `tests/unit`·`tests/e2e`. 상세는 `docs/development/06.development-plan.md` §4
+- **구조:** `app/`(화면·API), `components/`(공통 UI), `lib/`(로직·데이터), `content/`(가이드 콘텐츠 JSON — 가이드북 원문), `styles/tokens.css`(색상 토큰 — hex 허용 유일 파일), `tests/unit`·`tests/e2e`. 상세는 `docs/development/06.development-plan.md` §4
 - **반응형:** 모바일 우선(Mobile-first). 사용 환경 가정 — 코치가 세션 중 **태블릿** 사용
 - **단순성:** 요청받지 않은 추상화·의존성·기능 확장 금지. 의도적 단순화는 `// ponytail: <현재 한계>, <업그레이드 경로>`로 기록
 
