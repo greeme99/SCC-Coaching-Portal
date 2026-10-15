@@ -6,7 +6,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Copy, ExternalLink, Share2 } from 'lucide-react';
 import type { ProgramSummary } from '@/lib/data/programs';
 import type { RecordFormId } from '@/lib/navigation';
-import { buildPrefillUrl, configuredKeys, type PrefillEntries } from '@/lib/prefill';
+import { MAX_SESSION_NO, buildPrefillUrl, configuredKeys, parseExtraSession, type PrefillEntries } from '@/lib/prefill';
 
 type Props = {
   formId: RecordFormId;
@@ -19,6 +19,9 @@ type Props = {
 
 type ListState = { status: 'loading' } | { status: 'error' } | { status: 'ok'; programs: ProgramSummary[] };
 
+// 회차 목록의 "추가 회차" 값. 숫자 회차와 겹치지 않게 문자열로 둔다
+const EXTRA_SESSION = 'extra';
+
 const fieldClass = 'min-h-11 w-full rounded-md border border-line bg-surface px-3 text-main';
 const primaryClass = 'inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 font-semibold text-on-primary';
 const secondaryClass = 'inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface px-5 font-semibold text-main hover:bg-subtle';
@@ -28,6 +31,8 @@ export function FormLauncher({ formId, title, formUrl, prefill, shareOnly }: Pro
   const [programId, setProgramId] = useState('');
   const [clientCode, setClientCode] = useState('');
   const [sessionNo, setSessionNo] = useState('');
+  // 회차 목록에서 "추가 회차"를 고르면 번호를 직접 입력한다 (회기 수를 넘는 추가 진행 회차)
+  const [extraSession, setExtraSession] = useState('');
   const [toast, setToast] = useState('');
   const [fallbackLink, setFallbackLink] = useState('');
   const fallbackRef = useRef<HTMLInputElement>(null);
@@ -65,14 +70,21 @@ export function FormLauncher({ formId, title, formUrl, prefill, shareOnly }: Pro
   const targetUrl = program?.formUrls[formId] || formUrl;
   const prefillReady = configuredKeys(prefill).length > 0;
 
-  const missing = !programId || !clientCode || (needsSession && !sessionNo);
-  const link = list.status === 'error' ? formUrl : !missing && targetUrl ? buildPrefillUrl(targetUrl, prefill, { programId, clientCode, sessionNo }) : '';
+  const sessionCount = program?.sessionCount ?? 0;
+  const isExtra = sessionNo === EXTRA_SESSION;
+  const effectiveSession = isExtra ? parseExtraSession(extraSession, sessionCount) : sessionNo;
+  const missing = !programId || !clientCode || (needsSession && !effectiveSession);
+  const link =
+    list.status === 'error' ? formUrl : !missing && targetUrl ? buildPrefillUrl(targetUrl, prefill, { programId, clientCode, sessionNo: effectiveSession ?? '' }) : '';
+  const extraRange = `${sessionCount + 1} ~ ${MAX_SESSION_NO}`;
   const reason =
     list.status === 'error' || !missing
       ? '구글폼 주소가 아직 등록되지 않았습니다'
-      : needsSession
-        ? '프로그램, 고객 코드, 회차를 선택하세요'
-        : '프로그램과 고객 코드를 선택하세요';
+      : needsSession && programId && clientCode && isExtra
+        ? `추가 회차 번호를 ${extraRange} 사이 숫자로 입력하세요`
+        : needsSession
+          ? '프로그램, 고객 코드, 회차를 선택하세요'
+          : '프로그램과 고객 코드를 선택하세요';
 
   async function copy() {
     try {
@@ -120,6 +132,7 @@ export function FormLauncher({ formId, title, formUrl, prefill, shareOnly }: Pro
                 setProgramId(e.target.value);
                 setClientCode('');
                 setSessionNo('');
+                setExtraSession('');
               }}
             >
               <option value="">선택</option>
@@ -151,12 +164,35 @@ export function FormLauncher({ formId, title, formUrl, prefill, shareOnly }: Pro
               </label>
               <select id={`${fieldId}-session`} className={fieldClass} value={sessionNo} onChange={(e) => setSessionNo(e.target.value)} disabled={!program}>
                 <option value="">선택</option>
-                {Array.from({ length: program?.sessionCount ?? 0 }, (_, i) => String(i + 1)).map((n) => (
+                {Array.from({ length: sessionCount }, (_, i) => String(i + 1)).map((n) => (
                   <option key={n} value={n}>
                     {n}회차
                   </option>
                 ))}
+                {program && <option value={EXTRA_SESSION}>추가 회차 (직접 입력)</option>}
               </select>
+              {isExtra && (
+                <>
+                  <label htmlFor={`${fieldId}-extra`} className="mt-3 mb-1 block text-caption text-body">
+                    추가 회차 번호
+                  </label>
+                  <input
+                    id={`${fieldId}-extra`}
+                    className={fieldClass}
+                    type="number"
+                    inputMode="numeric"
+                    min={sessionCount + 1}
+                    max={MAX_SESSION_NO}
+                    placeholder={`예: ${sessionCount + 1}`}
+                    value={extraSession}
+                    onChange={(e) => setExtraSession(e.target.value)}
+                    aria-describedby={`${fieldId}-extra-hint`}
+                  />
+                  <p id={`${fieldId}-extra-hint`} className="mt-1 text-caption text-muted">
+                    이 프로그램은 {sessionCount}회기입니다. {sessionCount + 1}회차부터 입력합니다.
+                  </p>
+                </>
+              )}
             </div>
           )}
         </div>

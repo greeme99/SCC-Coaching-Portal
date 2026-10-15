@@ -42,7 +42,7 @@ test('TC-022 코칭일지: 프로그램·고객 코드·회차를 고르면 폼 
   await page.goto('/records/journal');
   await page.getByLabel('프로그램', { exact: true }).selectOption('2026-2-DEMO-CAREER');
   await page.getByLabel('고객 코드').selectOption('C01');
-  await page.getByLabel('회차').selectOption('3');
+  await page.getByLabel('회차', { exact: true }).selectOption('3');
   const link = page.getByRole('link', { name: '구글폼 열기' });
   await expect(link).toHaveAttribute('href', CUSTOM);
   await expect(link).toHaveAttribute('target', '_blank');
@@ -51,7 +51,7 @@ test('TC-022 코칭일지: 프로그램·고객 코드·회차를 고르면 폼 
 test('TC-023 코치 종료소감: 회차 선택이 없다', async ({ page }) => {
   await mockPrograms(page);
   await page.goto('/records/coach-reflection');
-  await expect(page.getByLabel('회차')).toHaveCount(0);
+  await expect(page.getByLabel('회차', { exact: true })).toHaveCount(0);
   await page.getByLabel('프로그램', { exact: true }).selectOption('2026-2-DEMO-CAREER');
   await page.getByLabel('고객 코드').selectOption('C02');
   await expect(page.getByRole('link', { name: '구글폼 열기' })).toBeVisible();
@@ -70,7 +70,33 @@ test('TC-025 회차 목록은 프로그램 회기 수만큼만 표시한다', as
   await mockPrograms(page);
   await page.goto('/records/journal');
   await page.getByLabel('프로그램', { exact: true }).selectOption('2026-1-DEMO-MENTORING');
-  await expect(page.getByLabel('회차').locator('option')).toHaveText(['선택', '1회차', '2회차', '3회차']);
+  await expect(page.getByLabel('회차', { exact: true }).locator('option')).toHaveText(['선택', '1회차', '2회차', '3회차', '추가 회차 (직접 입력)']);
+});
+
+test('TC-057 코칭일지: 추가 회차를 고르고 번호를 입력하면 폼 열기 링크가 생긴다', async ({ page }) => {
+  await mockPrograms(page);
+  await page.goto('/records/journal');
+  await page.getByLabel('프로그램', { exact: true }).selectOption('2026-1-DEMO-MENTORING');
+  await page.getByLabel('고객 코드').selectOption('M01');
+  await page.getByLabel('회차', { exact: true }).selectOption({ label: '추가 회차 (직접 입력)' });
+  const input = page.getByLabel('추가 회차 번호');
+  await expect(input).toHaveAccessibleDescription('이 프로그램은 3회기입니다. 4회차부터 입력합니다.');
+  // 회기 수 이하 번호는 목록에서 고르므로 받지 않는다
+  await input.fill('3');
+  await expect(page.getByRole('button', { name: '구글폼 열기' })).toHaveAccessibleDescription('추가 회차 번호를 4 ~ 99 사이 숫자로 입력하세요');
+  await input.fill('4');
+  // DEMO-MENTORING은 전용 폼이 없고 공용 폼 주소도 아직 비어 있어, 값이 다 갖춰지면 주소 미등록 안내로 바뀐다
+  await expect(page.getByRole('button', { name: '구글폼 열기' })).toHaveAccessibleDescription('구글폼 주소가 아직 등록되지 않았습니다');
+});
+
+test('TC-057 코칭일지: 전용 폼이 있으면 추가 회차로 링크가 생긴다', async ({ page }) => {
+  await mockPrograms(page);
+  await page.goto('/records/journal');
+  await page.getByLabel('프로그램', { exact: true }).selectOption('2026-2-DEMO-CAREER');
+  await page.getByLabel('고객 코드').selectOption('C01');
+  await page.getByLabel('회차', { exact: true }).selectOption('extra');
+  await page.getByLabel('추가 회차 번호').fill('6');
+  await expect(page.getByRole('link', { name: '구글폼 열기' })).toHaveAttribute('href', CUSTOM);
 });
 
 test('TC-026 피코치 종료소감: 링크 복사 후 토스트, 이름·이메일 없음', async ({ page, context }) => {

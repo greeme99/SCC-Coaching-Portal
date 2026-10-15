@@ -24,3 +24,15 @@ export function buildPrefillUrl(formUrl: string, entries: PrefillEntries, values
   for (const key of keys) url.searchParams.set(entryParam(entries[key]!), values[key]!.trim());
   return url.toString();
 }
+
+// 추가 회차 상한 — 오타(예: 300)를 막기 위한 값. 실제 운영 회차는 이보다 훨씬 적다
+export const MAX_SESSION_NO = 99;
+
+// 코칭일지 "추가 회차" 입력 검사. 프로그램 회기 수를 넘는 정수만 받는다 (1 ~ 회기 수는 목록에서 고른다)
+// 올바르면 정규화한 번호 문자열, 아니면 null
+export function parseExtraSession(input: string, sessionCount: number): string | null {
+  const value = input.trim();
+  if (!/^\d+$/.test(value)) return null;
+  const no = Number(value);
+  return no > sessionCount && no <= MAX_SESSION_NO ? String(no) : null;
+}

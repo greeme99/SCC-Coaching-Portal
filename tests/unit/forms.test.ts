@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { buildProgramList, toRecords } from '@/lib/data/programs';
 import { FORMS, formById } from '@/lib/forms';
 import { RECORD_FORMS } from '@/lib/navigation';
-import { buildPrefillUrl, configuredKeys } from '@/lib/prefill';
+import { buildPrefillUrl, configuredKeys, parseExtraSession } from '@/lib/prefill';
 
 // 양식 원문과 대조할 때 공백 차이와 각주 번호(¹²³⁴)는 무시한다
 const normalize = (s: string) => s.replace(/[¹²³⁴]/g, '').replace(/\s+/g, ' ').trim();
@@ -53,6 +53,17 @@ describe('prefill 링크 (FN-006 ⑤, TC-022·023)', () => {
   it('등록된 항목이 없으면 폼 주소를 그대로 돌려준다', () => {
     expect(buildPrefillUrl(formUrl, { programId: '', clientCode: '' }, { programId: 'P', clientCode: 'C01' })).toBe(formUrl);
     expect(configuredKeys({ programId: ' ', clientCode: '' })).toEqual([]);
+  });
+});
+
+describe('코칭일지 추가 회차 입력 (TC-057)', () => {
+  it('회기 수를 넘는 정수만 받고 앞뒤 공백·앞자리 0은 정리한다', () => {
+    expect(parseExtraSession('6', 5)).toBe('6');
+    expect(parseExtraSession(' 07 ', 5)).toBe('7');
+    expect(parseExtraSession('99', 5)).toBe('99');
+  });
+  it('회기 수 이하·상한 초과·숫자가 아닌 값은 거절한다', () => {
+    for (const input of ['', '5', '0', '100', '6.5', '-6', '6회', 'abc']) expect(parseExtraSession(input, 5), input).toBeNull();
   });
 });
 
