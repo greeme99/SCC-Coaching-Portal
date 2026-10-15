@@ -32,7 +32,7 @@ test('질의 항목 미리보기: 원문 문항과 더 보기', async ({ page })
   await page.goto('/records/journal');
   await expect(page.getByText('삼코동 [OO 코칭 프로그램] 회차별 코칭 일지')).toBeVisible();
   await expect(page.getByText('코치(멘토) 성함')).toBeVisible();
-  const more = page.getByText('더 보기 (6개 문항)');
+  const more = page.getByText('더 보기 (5개 문항)');
   await more.click();
   await expect(page.getByText('삼코동 운영팀에게 전달 및 요청 사항')).toBeVisible();
 });

@@ -22,14 +22,14 @@
 
 ## 2. 현재 상태
 
-**Summary:** Phase 1(앱 셸·접근 비밀번호·디자인 토큰), Phase 2(프로그램 개요·코칭 회차 21개 화면·추천 도구) 구현 완료. Phase 3은 구글폼 3종 연계(질의 항목 미리보기·prefill 링크·API-001)까지 진행했다. 종료 리포트 양식·나눔터·참조 자료실·대시보드는 아직 뼈대 상태다.
+**Summary:** Phase 1(앱 셸·접근 비밀번호·디자인 토큰), Phase 2(프로그램 개요·코칭 회차 21개 화면·추천 도구) 구현 완료. Phase 3은 구글폼 4종 정의·생성 스크립트와 연계(질의 항목 미리보기·prefill 링크·API-001)까지 진행했다. 나눔터·참조 자료실·대시보드는 아직 뼈대 상태다.
 
 - Next.js 16.4 + React 19 + Tailwind CSS 4 + TypeScript
 - 가이드 콘텐츠는 `content/*.json`(가이드북 원문)에 있고 `lib/content.ts`로 읽는다. 문구를 고치면 `tests/unit/content.test.ts`가 가이드북 원문과 대조한다
 - **Next.js 16은 학습 데이터와 다를 수 있다.** 코드 작성 전 `node_modules/next/dist/docs/`의 해당 문서를 읽는다 (`AGENTS.md`). 예: middleware는 `proxy.ts`로 바뀜, `cacheComponents` 사용 중이라 `dynamicParams` 등 일부 설정 불가
 - 개발 문서 8종과 사이드바 정적 시안은 `docs/development/`에 있다 (인덱스: `docs/development/00.document-index.md`). 구현은 이 문서를 기준으로 한다
 - 참조 가이드북(§10)은 `docs/reference/`에 등록됨
-- 구글폼 양식 원문은 `docs/forms/`, 앱용 정의(질의 항목·폼 주소·prefill 항목 ID)는 `content/forms.json`. 문구를 고치면 `tests/unit/forms.test.ts`가 원문과 대조한다
+- 구글폼 양식 원문은 `docs/forms/`, 앱용 정의(질의 항목·폼 주소·prefill 항목 ID)는 `content/forms.json`. 문구를 고치면 `tests/unit/forms.test.ts`가 원문과 대조한다. 실제 구글폼은 `scripts/google/create-forms.gs`(forms.json으로 생성)를 응답 시트의 Apps Script에서 한 번 실행해 만든다
 - 디자인 시스템 `DESIGN.md`(루트)와 삼코동 공식 로고(`public/brand/`) 등록됨 (§8.5)
 - **없는 명령을 있다고 가정하지 않는다.** 명령은 §8.2 표만 쓴다.
 

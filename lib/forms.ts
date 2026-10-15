@@ -20,6 +20,8 @@ export type FormDefinition = {
   formUrl: string;
   prefill: PrefillEntries;
   description: string[];
+  // 구글폼 제출 후 확인 메시지 (폼 생성 스크립트에서 사용)
+  confirmation: string;
   questions: FormQuestion[];
 };
 
