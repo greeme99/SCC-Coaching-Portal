@@ -121,7 +121,7 @@ UI/디자인 작업 관련 요청 수신 시, 코딩 개시 전 아래 순서로
 
 ### Font Families
 
-- **Primary Text**: `'Plus Jakarta Sans'`, `'Inter'`, `-apple-system`, `BlinkMacSystemFont`, `sans-serif`
+- **Primary Text**: `'Pretendard'` (한글, SIL OFL), `'Plus Jakarta Sans'`, `'Inter'`, `-apple-system`, `BlinkMacSystemFont`, `sans-serif`
 - **Monospace & Code**: `'JetBrains Mono'`, `'Fira Code'`, `monospace`
 
 ### Typography Hierarchy
@@ -150,7 +150,7 @@ UI/디자인 작업 관련 요청 수신 시, 코딩 개시 전 아래 순서로
 
 ### 1) Navigation & Sidebar
 
-- **Active Navigation Item**: Background `var(--color-primary)`, Color `#ffffff`, Radius `10px`, Box Shadow `0 4px 14px rgba(0, 102, 255, 0.3)`
+- **Active Navigation Item**: Background `var(--color-primary-light)`, Color `var(--color-primary)`, Font Weight `600`, Radius `10px`, 그림자 없음 (SCD Coaching Portal 결정 DEC-014: 메뉴가 많아 진한 배경 대신 연한 배경 사용)
 - **Inactive Item**: Color `var(--color-text-muted)`, Hover Background `var(--color-bg-subtle)`
 
 ### 2) KPI Summary Cards
