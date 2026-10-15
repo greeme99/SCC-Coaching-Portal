@@ -22,13 +22,14 @@
 
 ## 2. 현재 상태
 
-**Summary:** 빈 저장소. 기술 스택·디렉터리·명령어는 첫 구현 시 확정하고 이 문서를 갱신한다.
+**Summary:** Phase 1(앱 셸·접근 비밀번호·디자인 토큰·빈 화면 뼈대) 구현 완료. Phase 2부터 기능을 채운다.
 
-- 코드·의존성·빌드 스크립트 없음
+- Next.js 16.4 + React 19 + Tailwind CSS 4 + TypeScript. 각 화면은 "Phase N에서 구현 예정" 안내만 있는 뼈대 상태
+- **Next.js 16은 학습 데이터와 다를 수 있다.** 코드 작성 전 `node_modules/next/dist/docs/`의 해당 문서를 읽는다 (`AGENTS.md`). 예: middleware는 `proxy.ts`로 바뀜, `cacheComponents` 사용 중이라 `dynamicParams` 등 일부 설정 불가
 - 개발 문서 8종과 사이드바 정적 시안은 `docs/development/`에 있다 (인덱스: `docs/development/00.document-index.md`). 구현은 이 문서를 기준으로 한다
 - 참조 가이드북(§10)은 `docs/reference/`에 등록됨
 - 디자인 시스템 `DESIGN.md`(루트)와 삼코동 공식 로고(`public/brand/`) 등록됨 (§8.5)
-- 스택이 확정되면 §8의 `명령어` 표를 실제 값으로 채운다. **없는 명령을 있다고 가정하지 않는다.**
+- **없는 명령을 있다고 가정하지 않는다.** 명령은 §8.2 표만 쓴다.
 
 ---
 
@@ -164,7 +165,7 @@
 ## 7. 개인정보·보안 원칙
 
 - **최소 수집:** 개인정보는 기능에 필요한 필드(**이름, 이메일 주소**)로 한정한다. 그 외 개인정보 필드 추가 금지. 이름·이메일은 `roster` 시트에만 두고, 구글폼·응답·화면에는 **고객 코드**만 쓴다
-- **접근 제한:** 사용자 계정·로그인 화면·역할별 권한은 두지 않는다. 대신 **공용 비밀번호 1개**(HTTP Basic Auth, Next.js 미들웨어, 환경변수 `SITE_PASSWORD`)로 사이트 전체 접근만 막는다
+- **접근 제한:** 사용자 계정·로그인 화면·역할별 권한은 두지 않는다. 대신 **공용 비밀번호 1개**(HTTP Basic Auth, 루트 `proxy.ts`, 환경변수 `SITE_PASSWORD`)로 사이트 전체 접근만 막는다
 - **저장 분리:** 상담 기록(민감) 시트·파일 ↔ 운영·통계(비민감) 시트·파일 분리. 통계는 집계·비식별 값만 사용
 - **비밀값:** `.env`, API Key, 토큰은 커밋하지 않는다. `.env.example`에 키 이름만 둔다
 - 단순화 원칙(§8)보다 이 절이 **항상 우선**한다
@@ -188,17 +189,19 @@
 
 | 목적 | 명령 |
 |---|---|
-| 설치 | _(스택 확정 후 기입)_ |
-| 개발 서버 | _(스택 확정 후 기입)_ |
-| 테스트 | _(스택 확정 후 기입)_ |
-| 린트 / 타입체크 | _(스택 확정 후 기입)_ |
-| 빌드 | _(스택 확정 후 기입)_ |
+| 설치 | `npm ci` (Node.js 22 이상) |
+| 개발 서버 | `SITE_PASSWORD=<임의 값> npm run dev` (비밀번호가 없으면 모든 요청이 503) |
+| 단위 테스트 | `npm test` (Vitest) |
+| E2E 테스트 | `npm run build && npm run test:e2e` (Playwright, 테스트 비밀번호로 `next start` 자동 실행) |
+| 린트 / 타입체크 / 디자인 린트 | `npm run lint` / `npm run typecheck` / `npm run design:lint` |
+| 커밋 전 일괄 검사 | `npm run check` (lint + typecheck + design:lint + test) |
+| 빌드 | `npm run build` |
 
 ### 8.3 코드 컨벤션
 
 - **언어:** UI 문구는 한국어, 코드 식별자(변수·함수·테이블·API 경로)는 영어
 - **주석:** 한글 주석. "무엇"보다 "왜"를 적는다
-- **구조:** 기능(도메인) 단위 모듈 — 예: `guide`, `journal`, `worksheet`, `between`, `completion`, `dashboard`, `survey`
+- **구조:** `app/`(화면·API), `components/`(공통 UI), `lib/`(로직·데이터), `content/`(가이드 콘텐츠, Phase 2), `styles/tokens.css`(색상 토큰 — hex 허용 유일 파일), `tests/unit`·`tests/e2e`. 상세는 `docs/development/06.development-plan.md` §4
 - **반응형:** 모바일 우선(Mobile-first). 사용 환경 가정 — 코치가 세션 중 **태블릿** 사용
 - **단순성:** 요청받지 않은 추상화·의존성·기능 확장 금지. 의도적 단순화는 `// ponytail: <현재 한계>, <업그레이드 경로>`로 기록
 
@@ -229,7 +232,7 @@
 - **`DESIGN.md`와 이 문서가 충돌할 때:** 코칭 철학(§3)과 금지 사항(§6)이 우선한다. 예를 들어 대시보드의 미완료 항목에는 `--color-danger`·`--color-warning`(빨강·주황)을 쓰지 않고 `--color-text-muted` 같은 중립 토큰을 쓴다.
 - **한글 폰트:** Pretendard를 기본 폰트 맨 앞에 둔다 (DEC-010, `DESIGN.md` §3 반영).
 - **선택 메뉴:** 연한 파란 배경 + 파란 글자 (DEC-014, `DESIGN.md` §4-1 반영).
-- **`design:lint`:** Phase 1에서 `npm run design:lint`로 만든다 (`docs/development/06.development-plan.md` §7).
+- **`design:lint`:** `npm run design:lint` — 토큰 파일 밖 색상 코드·rgb·Tailwind 기본 팔레트 클래스·경고색 토큰·정렬 기호 누락을 막는다. Tailwind 기본 색 팔레트는 꺼 두었고 토큰 유틸리티(`bg-surface`, `text-main`, `text-primary` 등)만 쓴다 (`app/globals.css`).
 
 ---
 

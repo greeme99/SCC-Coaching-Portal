@@ -1,0 +1,50 @@
+/* 디자인 토큰 — 루트 DESIGN.md §2 값을 그대로 옮긴 유일한 색상 정의 파일.
+   색상 코드(hex)는 이 파일에서만 허용한다 (scripts/design-lint.mjs가 다른 파일을 검사). */
+
+:root,
+[data-theme="light"] {
+  --color-bg-base: #f8fafc;
+  --color-bg-surface: #ffffff;
+  --color-bg-subtle: #f1f5f9;
+  --color-bg-hover: #e2e8f0;
+
+  --color-primary: #0066ff;
+  --color-primary-hover: #0052cc;
+  --color-primary-light: #e0edff;
+  --gradient-primary: linear-gradient(135deg, #0066ff 0%, #3b82f6 100%);
+
+  --color-border: #f1f5f9;
+  --color-border-strong: #e2e8f0;
+  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  --shadow-hover: 0 10px 25px -3px rgba(0, 102, 255, 0.15);
+  --color-scrim: rgba(15, 23, 42, 0.4);
+
+  --color-text-main: #0f172a;
+  --color-text-body: #334155;
+  --color-text-muted: #94a3b8;
+  --color-text-on-primary: #ffffff;
+}
+
+/* 다크 토큰은 정의만 한다. 전환 UI는 2차 범위 (FR-013) */
+[data-theme="dark"] {
+  --color-bg-base: #0f172a;
+  --color-bg-surface: #1e293b;
+  --color-bg-subtle: #334155;
+  --color-bg-hover: #475569;
+
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-primary-light: rgba(99, 102, 241, 0.2);
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+
+  --color-border: #334155;
+  --color-border-strong: #475569;
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 10px 25px -3px rgba(99, 102, 241, 0.3);
+  --color-scrim: rgba(0, 0, 0, 0.5);
+
+  --color-text-main: #f8fafc;
+  --color-text-body: #cbd5e1;
+  --color-text-muted: #64748b;
+  --color-text-on-primary: #ffffff;
+}
