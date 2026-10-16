@@ -6,7 +6,9 @@ import { RECORD_FORMS } from '@/lib/navigation';
 import { buildPrefillUrl, configuredKeys, parseExtraSession } from '@/lib/prefill';
 
 // 양식 원문과 대조할 때 공백 차이와 각주 번호(¹²³⁴)는 무시한다
-const normalize = (s: string) => s.replace(/[¹²³⁴]/g, '').replace(/\s+/g, ' ').trim();
+// 원문의 "[OO 코칭 프로그램]" 자리 표시는 실제 폼에서 "코칭 프로그램"으로 쓴다 (공용 폼이라 이름을 넣을 수 없음, docs/forms/README.md)
+const normalize = (s: string) =>
+  s.replace(/\[OO 코칭 프로그램\]/g, '코칭 프로그램').replace(/[¹²³⁴]/g, '').replace(/\s+/g, ' ').trim();
 
 describe('forms.json 구조', () => {
   it('일지·소감 4종이 모두 정의되어 있다', () => {

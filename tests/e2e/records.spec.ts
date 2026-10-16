@@ -38,7 +38,7 @@ async function mockPrograms(page: Page, status = 200) {
 test('질의 항목 미리보기: 원문 문항과 더 보기', async ({ page }) => {
   await mockPrograms(page);
   await page.goto('/records/journal');
-  await expect(page.getByText('삼코동 [OO 코칭 프로그램] 회차별 코칭 일지')).toBeVisible();
+  await expect(page.getByText('삼코동 코칭 프로그램 회차별 코칭 일지')).toBeVisible();
   await expect(page.getByText('코치(멘토) 성함')).toBeVisible();
   const more = page.getByText('더 보기 (5개 문항)');
   await more.click();

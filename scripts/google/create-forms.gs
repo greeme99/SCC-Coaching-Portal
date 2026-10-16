@@ -140,6 +140,35 @@ function addProgramNameItems() {
   Logger.log('완료: forms_config 탭의 prefill_programName 열을 확인하세요.');
 }
 
+// 이미 만든 폼 4개의 "[OO 코칭 프로그램]" 자리 표시를 "코칭 프로그램"으로 바꾼다 (2026-10 추가, 한 번만 실행)
+// 공용 폼이라 프로그램 이름은 맨 위 '코칭 프로그램' 칸에 자동 입력된다. 응답·항목 ID는 바뀌지 않는다
+function replaceProgramPlaceholder() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const config = ss && ss.getSheetByName(CONFIG_SHEET);
+  if (!config) throw new Error('응답 시트의 [확장 프로그램 → Apps Script]에서 실행하세요. forms_config 탭이 필요합니다.');
+  const fix = function (text) { return String(text || '').split('[OO 코칭 프로그램]').join('코칭 프로그램'); };
+  const values = config.getDataRange().getValues();
+  const editCol = values[0].indexOf('editUrl');
+  const titleCol = values[0].indexOf('title');
+  for (let r = 1; r < values.length; r++) {
+    const form = FormApp.openByUrl(values[r][editCol]);
+    let count = 0;
+    // 폼 제목 속성이 비어 있으면 화면 상단에는 드라이브 파일 이름이 보인다 — 둘 다 고친다
+    const file = DriveApp.getFileById(form.getId());
+    const title = fix(form.getTitle() || file.getName());
+    if (form.getTitle() !== title) { form.setTitle(title); count++; }
+    if (file.getName() !== title) { file.setName(title); count++; }
+    if (form.getDescription() !== fix(form.getDescription())) { form.setDescription(fix(form.getDescription())); count++; }
+    form.getItems().forEach(function (item) {
+      if (item.getTitle() !== fix(item.getTitle())) { item.setTitle(fix(item.getTitle())); count++; }
+      if (item.getHelpText() !== fix(item.getHelpText())) { item.setHelpText(fix(item.getHelpText())); count++; }
+    });
+    config.getRange(r + 1, titleCol + 1).setValue(title);
+    Logger.log(values[r][0] + ': ' + count + '곳 수정 → ' + title);
+  }
+  Logger.log('완료');
+}
+
 // 미리 채워진 링크를 만들어 "entry.숫자"를 읽는다. 키 문항이 없는 폼은 빈 값
 function entryId(form, keyItems, key) {
   if (!keyItems[key]) return '';
@@ -151,9 +180,9 @@ function entryId(form, keyItems, key) {
 const FORMS = [
   {
     "id": "journal",
-    "formTitle": "삼코동 [OO 코칭 프로그램] 회차별 코칭 일지",
+    "formTitle": "삼코동 코칭 프로그램 회차별 코칭 일지",
     "description": [
-      "[OO 코칭 프로그램]의 고객(멘티)과 진행하신 소중한 코칭 세션을 기록해 주세요.",
+      "코칭 프로그램의 고객(멘티)과 진행하신 소중한 코칭 세션을 기록해 주세요.",
       "작성해 주신 일지는 프로그램 진행 현황 파악 및 코칭 시간 인증을 위해서만 활용됩니다.",
       "(※ 코칭 윤리 규정에 따라, 고객의 민감한 개인정보나 구체적인 비밀 사항은 제외하고 코칭의 흐름과 주제 위주로 작성 부탁드립니다.)"
     ],
@@ -243,9 +272,9 @@ const FORMS = [
   },
   {
     "id": "final-report",
-    "formTitle": "삼코동 [OO 코칭 프로그램] 코칭 완료 보고서",
+    "formTitle": "삼코동 코칭 프로그램 코칭 완료 보고서",
     "description": [
-      "[OO 코칭 프로그램]의 전 과정을 성공적으로 마무리해 주신 코치님께 깊이 감사드립니다.",
+      "코칭 프로그램의 전 과정을 성공적으로 마무리해 주신 코치님께 깊이 감사드립니다.",
       "본 보고서는 코칭 프로그램의 최종 완료를 확인하고, 고객(멘티)과 코치님의 의미 있는 변화와 성장을 기록하기 위해 작성됩니다.",
       "(※ 코칭 윤리 규정에 따라, 고객의 민감한 개인정보나 비밀유지(Confidentiality)가 필요한 세부 대화 내용은 제외하고 핵심 주제와 성장 변화 위주로 작성해 주시기 바랍니다.)"
     ],
@@ -347,15 +376,15 @@ const FORMS = [
         "title": "작성자 확인 및 전자 서명",
         "kind": "단답형",
         "required": true,
-        "help": "위와 같이 [OO 코칭 프로그램]의 코칭 완료 보고서를 제출하며, 작성된 내용이 사실과 같음을 확인합니다. 아래에 코치님의 성함을 다시 한번 기입하여 서명을 갈음합니다. (예: 홍길동 (서명))"
+        "help": "위와 같이 코칭 프로그램의 코칭 완료 보고서를 제출하며, 작성된 내용이 사실과 같음을 확인합니다. 아래에 코치님의 성함을 다시 한번 기입하여 서명을 갈음합니다. (예: 홍길동 (서명))"
       }
     ]
   },
   {
     "id": "coach-reflection",
-    "formTitle": "삼코동 [OO 코칭 프로그램] 종료 설문 (코치/멘토용)",
+    "formTitle": "삼코동 코칭 프로그램 종료 설문 (코치/멘토용)",
     "description": [
-      "[OO 코칭 프로그램]에 진심을 다해 참여해주신 코치님들께 깊이 감사드립니다.",
+      "코칭 프로그램에 진심을 다해 참여해주신 코치님들께 깊이 감사드립니다.",
       "코칭 종료에 따라, 이번 프로젝트의 성과를 돌아보고 향후 더 나은 코칭 프로그램을 만들어가기 위해 코치님들의 고견을 듣고자 합니다.",
       "1 = 매우 그렇다(매우 만족) / 2 = 그렇다(만족) / 3 = 보통이다 / 4 = 그렇지 않다(불만족) / 5 = 전혀 그렇지 않다(매우 불만족)"
     ],
@@ -462,7 +491,7 @@ const FORMS = [
       },
       {
         "section": "코칭 과정 및 효과성 자가 평가",
-        "title": "나는 이번 [OO 코칭 프로그램]에 참여하며 코치로서의 역량과 전문성이 한층 성장했음을 느낀다.",
+        "title": "나는 이번 코칭 프로그램에 참여하며 코치로서의 역량과 전문성이 한층 성장했음을 느낀다.",
         "kind": "객관식",
         "required": true,
         "options": [
@@ -501,7 +530,7 @@ const FORMS = [
       },
       {
         "section": "향후 의향 및 종합 의견",
-        "title": "[OO 코칭 프로그램] 관련하여 좋았던 점이나 향후 개선되었으면 하는 부분(포탈 시스템, 운영 방식 등)에 대해 자유롭게 말씀해주십시오.",
+        "title": "코칭 프로그램 관련하여 좋았던 점이나 향후 개선되었으면 하는 부분(포탈 시스템, 운영 방식 등)에 대해 자유롭게 말씀해주십시오.",
         "kind": "장문형",
         "required": true
       }
@@ -509,9 +538,9 @@ const FORMS = [
   },
   {
     "id": "client-reflection",
-    "formTitle": "삼코동 [OO 코칭 프로그램] 종료 설문 (멘티/고객용)",
+    "formTitle": "삼코동 코칭 프로그램 종료 설문 (멘티/고객용)",
     "description": [
-      "[OO 코칭 프로그램]에 끝까지 적극적으로 참여해주신 멘티(고객) 여러분께 진심으로 감사드립니다.",
+      "코칭 프로그램에 끝까지 적극적으로 참여해주신 멘티(고객) 여러분께 진심으로 감사드립니다.",
       "코칭 종료에 따라, 여러분의 성장을 돌아보고 향후 더 나은 프로그램을 만들어가기 위해 소중한 의견을 듣고자 합니다.",
       "1 = 매우 그렇다(매우 만족) / 2 = 그렇다(만족) / 3 = 보통이다 / 4 = 그렇지 않다(불만족) / 5 = 전혀 그렇지 않다(매우 불만족)"
     ],
@@ -618,7 +647,7 @@ const FORMS = [
       },
       {
         "section": "코칭 과정 및 효과성 평가",
-        "title": "나는 이번 [OO 코칭 프로그램]을 통해 당초 기대했던 목표를 달성하고 개인적/직무적으로 성장했음을 느낀다.",
+        "title": "나는 이번 코칭 프로그램을 통해 당초 기대했던 목표를 달성하고 개인적/직무적으로 성장했음을 느낀다.",
         "kind": "객관식",
         "required": true,
         "options": [
@@ -657,7 +686,7 @@ const FORMS = [
       },
       {
         "section": "향후 의향 및 종합 의견",
-        "title": "[OO 코칭 프로그램]을 통해 가장 좋았던 점이나, 향후 개선되었으면 하는 부분(또는 담당 코치님께 전하고 싶은 감사 인사)을 자유롭게 말씀해주십시오.",
+        "title": "코칭 프로그램을 통해 가장 좋았던 점이나, 향후 개선되었으면 하는 부분(또는 담당 코치님께 전하고 싶은 감사 인사)을 자유롭게 말씀해주십시오.",
         "kind": "장문형",
         "required": true
       }
