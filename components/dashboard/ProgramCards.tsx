@@ -8,7 +8,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { COACHING_TYPES, COACHING_TYPE_INFO } from '@/lib/navigation';
 import { filterPrograms, programYear, readFilter, type ProgramFilter, type ProgramSummary } from '@/lib/data/programs';
 import type { ProgramStats } from '@/lib/data/progress';
-import { LoadError, Notice, STALE_NOTICE, UpdatedAt, shortDate, useApi } from './shared';
+import { LoadError, Notice, STALE_NOTICE, UpdatedAt, shortDate, useApi } from '@/components/ApiState';
 
 type ProgramCard = ProgramSummary & { stats: ProgramStats };
 type ProgramsBody = { programs: ProgramCard[]; invalidCount: number; fetchedAt: string };
@@ -29,9 +29,11 @@ export function ProgramCards() {
   const [result, reload] = useApi<ProgramsBody>('/api/programs', (b) => Array.isArray(b.programs));
 
   function setFilter(key: keyof ProgramFilter, value: string) {
-    const next = new URLSearchParams(params);
+    // 네이티브 history API는 주소를 바로 바꾸고 useSearchParams와 동기화된다 (Next.js 문서: Native History API)
+    // router.replace는 비동기라 필터를 연달아 바꾸면 앞의 값이 사라질 수 있다
+    const next = new URLSearchParams(window.location.search);
     next.set(key, value);
-    router.replace(`/dashboard?${next}`, { scroll: false });
+    window.history.replaceState(null, '', `/dashboard?${next}`);
   }
 
   const programs = result.status === 'ok' ? result.data.programs : [];

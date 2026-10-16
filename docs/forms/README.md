@@ -56,18 +56,20 @@
 
 ## 대시보드 연결 (Phase 4)
 
-**Summary:** 대시보드는 시트 3개를 읽기 전용으로 읽는다. 서비스 계정¹을 만들어 세 시트에 **보기 권한**만 주고, Vercel 환경변수 4개를 넣으면 동작한다.
+**Summary:** 대시보드·참조 자료실은 시트 3개와 드라이브 폴더 1개를 읽기 전용으로 읽는다. 서비스 계정¹을 만들어 **보기 권한**만 주고, Vercel 환경변수 5개를 넣으면 동작한다.
 
 | 시트 파일 | 탭 | 내용 | 민감도 | 환경변수 |
 |---|---|---|---|---|
 | 삼코동(programs) 프로그램 목록 | `programs` | 프로그램 ID·이름·기관·유형·회기 수·기간·상태·전용 폼 주소 | 비민감 | `SHEET_PROGRAMS_ID` |
 | 삼코동(roster) 참여자 명단 - 개인정보 | `roster` | 프로그램 ID·고객 코드·이름·이메일·담당 코치·회차별 예정일 | 개인정보 | `SHEET_ROSTER_ID` |
 | 삼코동(설문.일지.리포트) | 응답 탭 4개 | 구글폼 응답 | 민감 | `SHEET_RESPONSES_ID` |
+| 참조자료 (드라이브 폴더) | — | 참조 자료실 파일 목록 (파일 이름·형식·수정일만 읽음) | 비민감 | `DRIVE_REFERENCES_FOLDER_ID` |
 
-1. Google Cloud 콘솔에서 프로젝트를 만들고 **Google Sheets API**를 켠다
+1. Google Cloud 콘솔에서 프로젝트를 만들고 **Google Sheets API**와 **Google Drive API**를 켠다
 2. [IAM 및 관리자 → 서비스 계정]에서 계정을 만들고 **키(JSON)** 를 내려받는다
-3. 위 시트 3개를 서비스 계정 이메일(`…@….iam.gserviceaccount.com`)에 **뷰어**로 공유한다
-4. Vercel 환경변수: `GOOGLE_SERVICE_ACCOUNT_JSON`(키 JSON 전체), `SHEET_PROGRAMS_ID`, `SHEET_ROSTER_ID`, `SHEET_RESPONSES_ID` (시트 주소의 `/d/` 뒤 값)
+3. 위 시트 3개와 '참조자료' 폴더를 서비스 계정 이메일(`…@….iam.gserviceaccount.com`)에 **뷰어**로 공유한다
+4. Vercel 환경변수: `GOOGLE_SERVICE_ACCOUNT_JSON`(키 JSON 전체), `SHEET_PROGRAMS_ID`, `SHEET_ROSTER_ID`, `SHEET_RESPONSES_ID` (시트 주소의 `/d/` 뒤 값), `DRIVE_REFERENCES_FOLDER_ID` (폴더 주소의 `/folders/` 뒤 값)
+- 참조 자료실의 [열기]는 드라이브 공유 설정을 따른다. 코치가 열 수 있도록 '참조자료' 폴더를 코치들과 공유하거나 "링크가 있는 사용자"로 설정한다.
 
 - 키 JSON은 저장소·채팅에 올리지 않는다. Vercel 대시보드에만 넣는다 (CLAUDE.md §7).
 - 입력 규칙: `programs.status`는 `준비`·`운영중`·`종료`, `type`은 `career`·`mentoring`·`life`, 날짜는 `2026-10-20` 형식. 고객 코드는 `C01`처럼 문자를 섞는다 (숫자만 쓰면 시트가 앞자리 0을 지울 수 있다).

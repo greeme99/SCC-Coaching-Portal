@@ -8,7 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 import { COACHING_TYPE_INFO } from '@/lib/navigation';
 import type { ProgramSummary } from '@/lib/data/programs';
 import type { Cell, Progress, ProgressColumn, ProgressRow } from '@/lib/data/progress';
-import { LoadError, Notice, STALE_NOTICE, UpdatedAt, shortDate, spokenDate, useApi } from './shared';
+import { LoadError, Notice, STALE_NOTICE, UpdatedAt, shortDate, spokenDate, useApi } from '@/components/ApiState';
 
 type ProgressBody = Progress & { program: Omit<ProgramSummary, 'clientCodes' | 'formUrls'>; fetchedAt: string };
 type Sort = { column: string; dir: 'asc' | 'desc' };

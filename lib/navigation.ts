@@ -86,6 +86,8 @@ export const NAV_GROUPS: NavGroup[] = [
 // 대시보드는 하위 주소(/dashboard/[programId])에서도 같은 메뉴를 강조한다
 export function isActiveLink(href: string, pathname: string): boolean {
   if (href === '/dashboard') return pathname === '/dashboard' || pathname.startsWith('/dashboard/');
+  // 가이드북 화면(/references/guidebook)은 참조 자료실 메뉴로 강조
+  if (href === '/references') return pathname === '/references' || pathname.startsWith('/references/');
   return pathname === href;
 }
 
