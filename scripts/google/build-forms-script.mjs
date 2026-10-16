@@ -159,6 +159,31 @@ function addProgramNameItems() {
   Logger.log('완료: forms_config 탭의 prefill_programName 열을 확인하세요.');
 }
 
+// 이미 만든 폼 4개의 "[OO 코칭 프로그램]" 자리 표시를 "코칭 프로그램"으로 바꾼다 (2026-10 추가, 한 번만 실행)
+// 공용 폼이라 프로그램 이름은 맨 위 '코칭 프로그램' 칸에 자동 입력된다. 응답·항목 ID는 바뀌지 않는다
+function replaceProgramPlaceholder() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const config = ss && ss.getSheetByName(CONFIG_SHEET);
+  if (!config) throw new Error('응답 시트의 [확장 프로그램 → Apps Script]에서 실행하세요. forms_config 탭이 필요합니다.');
+  const fix = function (text) { return String(text || '').split('[OO 코칭 프로그램]').join('코칭 프로그램'); };
+  const values = config.getDataRange().getValues();
+  const editCol = values[0].indexOf('editUrl');
+  const titleCol = values[0].indexOf('title');
+  for (let r = 1; r < values.length; r++) {
+    const form = FormApp.openByUrl(values[r][editCol]);
+    let count = 0;
+    if (form.getTitle() !== fix(form.getTitle())) { form.setTitle(fix(form.getTitle())); count++; }
+    if (form.getDescription() !== fix(form.getDescription())) { form.setDescription(fix(form.getDescription())); count++; }
+    form.getItems().forEach(function (item) {
+      if (item.getTitle() !== fix(item.getTitle())) { item.setTitle(fix(item.getTitle())); count++; }
+      if (item.getHelpText() !== fix(item.getHelpText())) { item.setHelpText(fix(item.getHelpText())); count++; }
+    });
+    config.getRange(r + 1, titleCol + 1).setValue(form.getTitle());
+    Logger.log(values[r][0] + ': ' + count + '곳 수정 → ' + form.getTitle());
+  }
+  Logger.log('완료');
+}
+
 // 미리 채워진 링크를 만들어 "entry.숫자"를 읽는다. 키 문항이 없는 폼은 빈 값
 function entryId(form, keyItems, key) {
   if (!keyItems[key]) return '';
