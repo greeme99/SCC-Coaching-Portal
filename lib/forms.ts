@@ -18,7 +18,11 @@ export type FormDefinition = {
   source: string;
   updatedAt: string;
   formUrl: string;
+  // 구글폼 편집 주소 (관리자 구글 계정에서만 열림, 문항 수정용 기록)
+  editUrl: string;
   prefill: PrefillEntries;
+  // 응답이 쌓이는 응답 시트의 탭 이름 — 대시보드가 이 이름으로 읽는다
+  responseSheet: string;
   description: string[];
   // 구글폼 제출 후 확인 메시지 (폼 생성 스크립트에서 사용)
   confirmation: string;

@@ -20,6 +20,20 @@ describe('forms.json 구조', () => {
   });
 });
 
+describe('forms_config 연결 값 (응답 시트 forms_config 탭)', () => {
+  it('폼마다 응답 주소·편집 주소·응답 탭 이름이 있다', () => {
+    for (const form of FORMS) {
+      expect(form.formUrl, form.id).toMatch(/^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform$/);
+      expect(form.editUrl, form.id).toMatch(/^https:\/\/docs\.google\.com\/forms\/d\/[\w-]+\/edit$/);
+      expect(form.responseSheet, form.id).toMatch(/^응답_/);
+      for (const entry of Object.values(form.prefill)) expect(entry, form.id).toMatch(/^entry\.\d+$/);
+    }
+  });
+  it('응답 탭 이름이 서로 겹치지 않는다', () => {
+    expect(new Set(FORMS.map((f) => f.responseSheet)).size).toBe(FORMS.length);
+  });
+});
+
 describe('질의 항목 원문 일치 (docs/forms/)', () => {
   const withSource = FORMS.filter((f) => f.source);
   it.each(withSource.map((f) => [f.id, f] as const))('%s: 제목·설명·문항·선택지가 원문에 있다', (_, form) => {
