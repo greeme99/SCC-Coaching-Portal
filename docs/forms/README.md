@@ -4,10 +4,10 @@
 
 | # | 폼 (CLAUDE.md §5) | 파일 | 상태 |
 |---|---|---|---|
-| ① | 코칭일지 | `01.coaching-journal.md` | 원문 등록 |
-| ② | 종료 리포트 (코칭 완료 보고서) | `02.final-report.md` | 원문 등록 |
-| ③ | 코치 종료소감 | `03.coach-final-survey.md` | 원문 등록 |
-| ④ | 피코치 종료소감 | `04.client-final-survey.md` | 원문 등록 |
+| ① | 코칭일지 | `01.coaching-journal.md` | 구글폼 생성·포털 연결 (2026-10-16) |
+| ② | 종료 리포트 (코칭 완료 보고서) | `02.final-report.md` | 구글폼 생성·포털 연결 (2026-10-16) |
+| ③ | 코치 종료소감 | `03.coach-final-survey.md` | 구글폼 생성·포털 연결 (2026-10-16) |
+| ④ | 피코치 종료소감 | `04.client-final-survey.md` | 구글폼 생성·포털 연결 (2026-10-16) |
 
 ## 원문과 실제 구글폼의 차이
 
@@ -39,6 +39,7 @@
 5. `forms_config` 값을 `content/forms.json`의 `formUrl`·`prefill`에 옮긴다 (Claude에게 요청 가능)
 
 - 문항을 바꿀 때는 `content/forms.json`을 고치고 `node scripts/google/build-forms-script.mjs`로 스크립트를 다시 만든다. 이미 만든 폼은 구글폼 화면에서 직접 고친다 (스크립트를 다시 실행하면 폼이 새로 생긴다).
+- 응답 시트는 관리자 드라이브의 "코칭설문.일지.리포트" 하나에 4개 탭으로 모은다. Phase 4 대시보드는 `SHEET_RESPONSES_*` 4개 환경변수에 모두 이 시트 ID를 넣고, 위 탭 이름으로 읽는다. 폼 편집 주소는 시트의 `forms_config` 탭에 있다.
 - 이 시트에는 응답(민감)만 둔다. `programs`·`roster` 시트는 별도 파일로 만든다 (데이터 혼합 금지, CLAUDE.md §6).
 
 ## 앱에 연결하는 방법
