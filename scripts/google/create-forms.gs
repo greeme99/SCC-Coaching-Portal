@@ -127,12 +127,13 @@ function addProgramNameItems() {
   for (let r = 1; r < values.length; r++) {
     const form = FormApp.openByUrl(values[r][editCol]);
     // 두 번 실행해도 칸이 중복으로 생기지 않게 한다
-    let item = form.getItems(FormApp.ItemType.TEXT).filter(function (i) { return i.getTitle() === KEY_TITLES.programName; })[0];
-    if (!item) {
-      item = form.addTextItem().setTitle(KEY_TITLES.programName).setHelpText(KEY_HELP.programName).setRequired(false);
-      form.moveItem(item.getIndex(), 1);
-    }
-    const id = entryId(form, { programName: item.asTextItem() }, 'programName');
+    // getItems는 일반 Item을, addTextItem은 TextItem을 돌려주므로 TextItem으로 맞춘다
+    const existing = form.getItems(FormApp.ItemType.TEXT).filter(function (i) { return i.getTitle() === KEY_TITLES.programName; })[0];
+    const item = existing
+      ? existing.asTextItem()
+      : form.addTextItem().setTitle(KEY_TITLES.programName).setHelpText(KEY_HELP.programName).setRequired(false);
+    if (!existing) form.moveItem(item.getIndex(), 1);
+    const id = entryId(form, { programName: item }, 'programName');
     config.getRange(r + 1, col + 1).setValue(id);
     Logger.log(values[r][0] + ' → ' + id);
   }
