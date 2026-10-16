@@ -23,12 +23,15 @@ const COLLECT_EMAIL = { journal: true, 'final-report': true, 'coach-reflection':
 
 // 키 문항 — 제목은 대시보드가 응답 시트 열 이름으로 찾으므로 영어 그대로 둔다 (03.IA §5)
 const KEY_HELP = {
+  programName: '코칭 프로그램 이름 — 포털에서 연 링크면 자동으로 채워져 있습니다.',
   programId: '프로그램 ID — 포털에서 연 링크면 자동으로 채워져 있습니다. (예: 2026-2-SNU-CAREER)',
   clientCode: '고객 코드 — 자동으로 채워져 있습니다. 고객 이름은 적지 않습니다.',
   sessionNo: '회차 번호(숫자) — 자동으로 채워져 있습니다.',
 };
+// 키 문항 제목. 프로그램 이름은 대시보드가 읽지 않으므로 사람이 보는 한글 제목을 쓴다
+const KEY_TITLES = { programName: '코칭 프로그램' };
 // 미리 채워진 링크에서 항목 ID를 찾기 위한 표식 값
-const MARKERS = { programId: 'KEYPROGRAMID', clientCode: 'KEYCLIENTCODE', sessionNo: '98765' };
+const MARKERS = { programName: 'KEYPROGRAMNAME', programId: 'KEYPROGRAMID', clientCode: 'KEYCLIENTCODE', sessionNo: '98765' };
 
 function createSamkodongForms() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -38,7 +41,7 @@ function createSamkodongForms() {
 
   const parents = DriveApp.getFileById(ss.getId()).getParents();
   const folder = parents.hasNext() ? parents.next() : null;
-  const rows = [['id', 'title', 'formUrl', 'editUrl', 'prefill_programId', 'prefill_clientCode', 'prefill_sessionNo', 'responseSheet']];
+  const rows = [['id', 'title', 'formUrl', 'editUrl', 'prefill_programName', 'prefill_programId', 'prefill_clientCode', 'prefill_sessionNo', 'responseSheet']];
 
   FORMS.forEach(function (def) {
     const form = FormApp.create(def.formTitle);
@@ -49,7 +52,8 @@ function createSamkodongForms() {
     form.addSectionHeaderItem().setTitle('기본 정보 (포털 링크로 자동 입력)');
     const keyItems = {};
     def.keys.forEach(function (key) {
-      const item = form.addTextItem().setTitle(key).setHelpText(KEY_HELP[key]).setRequired(true);
+      // 프로그램 이름은 안내용이라 필수가 아니다 (포털 밖에서 연 폼도 제출할 수 있게)
+      const item = form.addTextItem().setTitle(KEY_TITLES[key] || key).setHelpText(KEY_HELP[key]).setRequired(key !== 'programName');
       if (key === 'sessionNo') item.setValidation(FormApp.createTextValidation().requireWholeNumber().build());
       keyItems[key] = item;
     });
@@ -91,6 +95,7 @@ function createSamkodongForms() {
       def.formTitle,
       form.getPublishedUrl(),
       form.getEditUrl(),
+      entryId(form, keyItems, 'programName'),
       entryId(form, keyItems, 'programId'),
       entryId(form, keyItems, 'clientCode'),
       entryId(form, keyItems, 'sessionNo'),
@@ -103,6 +108,35 @@ function createSamkodongForms() {
   config.getRange(1, 1, 1, rows[0].length).setFontWeight('bold');
   config.setFrozenRows(1);
   Logger.log('완료: forms_config 탭을 확인하세요.');
+}
+
+// 이미 만든 폼 4개에 '코칭 프로그램' 칸을 추가한다 (2026-10 추가, 한 번만 실행)
+// forms_config 탭의 편집 주소로 폼을 열고, 맨 위(기본 정보 제목 바로 아래)에 넣은 뒤 항목 ID를 prefill_programName 열에 적는다
+function addProgramNameItems() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const config = ss && ss.getSheetByName(CONFIG_SHEET);
+  if (!config) throw new Error('응답 시트의 [확장 프로그램 → Apps Script]에서 실행하세요. forms_config 탭이 필요합니다.');
+  const values = config.getDataRange().getValues();
+  const header = values[0];
+  let col = header.indexOf('prefill_programName');
+  if (col < 0) {
+    col = header.length;
+    config.getRange(1, col + 1).setValue('prefill_programName').setFontWeight('bold');
+  }
+  const editCol = header.indexOf('editUrl');
+  for (let r = 1; r < values.length; r++) {
+    const form = FormApp.openByUrl(values[r][editCol]);
+    // 두 번 실행해도 칸이 중복으로 생기지 않게 한다
+    let item = form.getItems(FormApp.ItemType.TEXT).filter(function (i) { return i.getTitle() === KEY_TITLES.programName; })[0];
+    if (!item) {
+      item = form.addTextItem().setTitle(KEY_TITLES.programName).setHelpText(KEY_HELP.programName).setRequired(false);
+      form.moveItem(item.getIndex(), 1);
+    }
+    const id = entryId(form, { programName: item.asTextItem() }, 'programName');
+    config.getRange(r + 1, col + 1).setValue(id);
+    Logger.log(values[r][0] + ' → ' + id);
+  }
+  Logger.log('완료: forms_config 탭의 prefill_programName 열을 확인하세요.');
 }
 
 // 미리 채워진 링크를 만들어 "entry.숫자"를 읽는다. 키 문항이 없는 폼은 빈 값
@@ -124,6 +158,7 @@ const FORMS = [
     ],
     "confirmation": "오늘도 고객의 성장을 위해 정성껏 코칭을 진행해 주신 코치님께 진심으로 감사드립니다. - 삼코동 운영팀 드림 -",
     "keys": [
+      "programName",
       "programId",
       "clientCode",
       "sessionNo"
@@ -215,6 +250,7 @@ const FORMS = [
     ],
     "confirmation": "코칭 완료 보고서가 정상적으로 제출되었습니다. 처음부터 끝까지 고객의 성장을 위해 헌신해 주신 코치님의 노고에 진심으로 감사드립니다. - 삼코동 운영팀 드림 -",
     "keys": [
+      "programName",
       "programId",
       "clientCode"
     ],
@@ -324,6 +360,7 @@ const FORMS = [
     ],
     "confirmation": "함께해주신 삼코동 코치님 덕분에 의미 있는 프로그램이 되었습니다. 진심으로 감사드립니다. - 삼코동 운영팀 드림 -",
     "keys": [
+      "programName",
       "programId",
       "clientCode"
     ],
@@ -479,6 +516,7 @@ const FORMS = [
     ],
     "confirmation": "끝까지 성실하게 응답해주셔서 감사합니다. 여러분의 성장을 늘 응원합니다! - 삼코동 운영팀 드림 -",
     "keys": [
+      "programName",
       "programId",
       "clientCode"
     ],

@@ -26,7 +26,8 @@ describe('forms_config 연결 값 (응답 시트 forms_config 탭)', () => {
       expect(form.formUrl, form.id).toMatch(/^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform$/);
       expect(form.editUrl, form.id).toMatch(/^https:\/\/docs\.google\.com\/forms\/d\/[\w-]+\/edit$/);
       expect(form.responseSheet, form.id).toMatch(/^응답_/);
-      for (const entry of Object.values(form.prefill)) expect(entry, form.id).toMatch(/^entry\.\d+$/);
+      // programName은 폼에 칸을 추가한 뒤 등록한다 — 비어 있으면 링크에 넣지 않는다
+      for (const [key, entry] of Object.entries(form.prefill)) if (key !== 'programName' || entry) expect(entry, form.id).toMatch(/^entry\.\d+$/);
     }
   });
   it('응답 탭 이름이 서로 겹치지 않는다', () => {
@@ -75,6 +76,10 @@ describe('prefill 링크 (FN-006 ⑤, TC-022·023)', () => {
     expect(url.searchParams.get('entry.222')).toBe('C 01');
     expect(url.searchParams.get('entry.333')).toBe('3');
     expect(url.toString()).toContain('entry.222=C+01');
+  });
+  it('프로그램 이름(한글·공백)도 미리 채운다', () => {
+    const url = new URL(buildPrefillUrl(formUrl, { ...entries, programName: 'entry.444' }, { programName: '서울대 커리어 코칭', programId: 'P', clientCode: 'C01', sessionNo: '1' }));
+    expect(url.searchParams.get('entry.444')).toBe('서울대 커리어 코칭');
   });
   it('항목 ID가 비어 있는 값은 링크에 넣지 않는다', () => {
     const url = buildPrefillUrl(formUrl, { programId: 'entry.111', clientCode: '' }, { programId: 'P', clientCode: 'C01' });
