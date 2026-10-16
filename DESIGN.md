@@ -59,7 +59,7 @@ UI/디자인 작업 관련 요청 수신 시, 코딩 개시 전 아래 순서로
   /* Typography Colors */
   --color-text-main: #0f172a;       /* Slate 900 (Main Title) */
   --color-text-body: #334155;       /* Slate 700 (Body Text) */
-  --color-text-muted: #94a3b8;      /* Slate 400 (Subtext/Caption) */
+  --color-text-muted: #64748b;      /* Slate 500 (Subtext/Caption) — WCAG AA 대비 4.5:1 충족 (DEC-028, 원래 Slate 400) */
   --color-text-on-primary: #ffffff; /* White Text on Primary Accent */
 }
 ```
@@ -90,7 +90,7 @@ UI/디자인 작업 관련 요청 수신 시, 코딩 개시 전 아래 순서로
   /* Typography Colors */
   --color-text-main: #f8fafc;       /* Slate 50 */
   --color-text-body: #cbd5e1;       /* Slate 300 */
-  --color-text-muted: #64748b;      /* Slate 500 */
+  --color-text-muted: #94a3b8;      /* Slate 400 — 어두운 바탕 대비 (DEC-028, 원래 Slate 500) */
   --color-text-on-primary: #ffffff;
 }
 ```
@@ -150,7 +150,7 @@ UI/디자인 작업 관련 요청 수신 시, 코딩 개시 전 아래 순서로
 
 ### 1) Navigation & Sidebar
 
-- **Active Navigation Item**: Background `var(--color-primary-light)`, Color `var(--color-primary)`, Font Weight `600`, Radius `10px`, 그림자 없음 (SCD Coaching Portal 결정 DEC-014: 메뉴가 많아 진한 배경 대신 연한 배경 사용)
+- **Active Navigation Item**: Background `var(--color-primary-light)`, Color `var(--color-primary-hover)` (연한 파랑 위 글자 대비 AA 충족, DEC-028), Font Weight `600`, Radius `10px`, 그림자 없음 (SCD Coaching Portal 결정 DEC-014: 메뉴가 많아 진한 배경 대신 연한 배경 사용)
 - **Inactive Item**: Color `var(--color-text-muted)`, Hover Background `var(--color-bg-subtle)`
 
 ### 2) KPI Summary Cards

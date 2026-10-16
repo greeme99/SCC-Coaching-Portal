@@ -21,7 +21,8 @@
 
   --color-text-main: #0f172a;
   --color-text-body: #334155;
-  --color-text-muted: #94a3b8;
+  /* WCAG AA 대비(4.5:1) 충족을 위해 Slate 400 → Slate 500 (DEC-028) */
+  --color-text-muted: #64748b;
   --color-text-on-primary: #ffffff;
 }
 
@@ -45,6 +46,7 @@
 
   --color-text-main: #f8fafc;
   --color-text-body: #cbd5e1;
-  --color-text-muted: #64748b;
+  /* 어두운 바탕 대비를 위해 Slate 500 → Slate 400 (DEC-028) */
+  --color-text-muted: #94a3b8;
   --color-text-on-primary: #ffffff;
 }

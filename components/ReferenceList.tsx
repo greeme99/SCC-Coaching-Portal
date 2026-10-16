@@ -46,7 +46,7 @@ export function ReferenceList() {
         <span className="flex items-center gap-2 font-semibold">
           <BookOpen size={20} aria-hidden className="text-primary" /> 코칭 프로그램 가이드북 <span className="text-caption font-normal text-body">(기본 자료)</span>
         </span>
-        <span className="font-semibold text-primary">열기</span>
+        <span className="font-semibold text-primary-strong">열기</span>
       </Link>
 
       {result.status === 'loading' && (
@@ -57,7 +57,7 @@ export function ReferenceList() {
         </div>
       )}
 
-      {result.status === 'error' && <LoadError onRetry={reload} source="구글 드라이브" />}
+      {result.status === 'error' && <LoadError onRetry={reload} source="구글 드라이브" code={result.code} />}
 
       {result.status === 'ok' && (
         <>

@@ -75,7 +75,7 @@ export function FormLauncher({ formId, title, formUrl, prefill, shareOnly }: Pro
   const effectiveSession = isExtra ? parseExtraSession(extraSession, sessionCount) : sessionNo;
   const missing = !programId || !clientCode || (needsSession && !effectiveSession);
   const link =
-    list.status === 'error' ? formUrl : !missing && targetUrl ? buildPrefillUrl(targetUrl, prefill, { programId, clientCode, sessionNo: effectiveSession ?? '' }) : '';
+    list.status === 'error' ? formUrl : !missing && targetUrl ? buildPrefillUrl(targetUrl, prefill, { programName: program?.name ?? '', programId, clientCode, sessionNo: effectiveSession ?? '' }) : '';
   const extraRange = `${sessionCount + 1} ~ ${MAX_SESSION_NO}`;
   const reason =
     list.status === 'error' || !missing

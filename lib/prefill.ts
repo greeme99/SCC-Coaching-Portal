@@ -1,7 +1,8 @@
 // 구글폼 prefill 링크 생성 (FN-006 ⑤). 브라우저·서버 공용 순수 함수
-// 이름·이메일은 받지 않는다 — 링크에는 프로그램 ID·고객 코드·회차만 들어간다 (RULE-008)
+// 고객 이름·이메일은 받지 않는다 — 링크에는 프로그램 이름·ID·고객 코드·회차만 들어간다 (RULE-008)
 
-export type PrefillKey = 'programId' | 'clientCode' | 'sessionNo';
+// programName: 공용 폼 제목 "[OO 코칭 프로그램]"을 바꿀 수 없어, 폼 맨 위 '코칭 프로그램' 칸에 이름을 채운다
+export type PrefillKey = 'programName' | 'programId' | 'clientCode' | 'sessionNo';
 export type PrefillEntries = Partial<Record<PrefillKey, string>>;
 export type PrefillValues = Partial<Record<PrefillKey, string>>;
 

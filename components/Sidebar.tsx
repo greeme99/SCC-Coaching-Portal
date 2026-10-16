@@ -42,7 +42,7 @@ const ICONS: Record<NavIcon, LucideIcon> = {
 // 선택 메뉴: 연한 파란 배경 + 파란 글자 (DEC-014)
 const itemBase =
   'flex min-h-11 items-center gap-3 rounded-md px-4 text-body transition-colors hover:bg-subtle hover:text-main';
-const itemActive = 'aria-[current=page]:bg-primary-light aria-[current=page]:font-semibold aria-[current=page]:text-primary';
+const itemActive = 'aria-[current=page]:bg-primary-light aria-[current=page]:font-semibold aria-[current=page]:text-primary-strong';
 
 function initialOpen(type: CoachingType | null): Set<CoachingType> {
   return new Set(type ? [type] : []);

@@ -26,7 +26,7 @@ function layout(count: number, perRow: number, nodeWidth: number) {
 function FlowSvg({ nodes, perRow, nodeWidth, title, markerId, numbered }: { nodes: FlowNode[]; perRow: number; nodeWidth: number; title: string; markerId: string; numbered?: boolean }) {
   const { positions, width, height } = layout(nodes.length, perRow, nodeWidth);
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${title}: ${nodes.map((n) => n.label).join(', ')}`} className="block h-auto w-full">
+    <svg viewBox={`0 0 ${width} ${height}`} role="group" aria-label={`${title}: ${nodes.map((n) => n.label).join(', ')}`} className="block h-auto w-full">
       <defs>
         <marker id={markerId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M0 0L10 5L0 10z" className="fill-muted" />
@@ -43,7 +43,8 @@ function FlowSvg({ nodes, perRow, nodeWidth, title, markerId, numbered }: { node
         return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth={2} className="stroke-muted" markerEnd={`url(#${markerId})`} />;
       })}
       {nodes.map((node, i) => (
-        <a key={node.label} href={node.href} aria-label={`${node.label} — ${node.description}`}>
+        // 링크 이름은 보이는 글자(번호 포함)로 시작해야 한다 (WCAG 2.5.3)
+        <a key={node.label} href={node.href} aria-label={`${numbered ? `${i + 1}. ` : ''}${node.label} — ${node.description}`}>
           <rect
             x={positions[i].x}
             y={positions[i].y}
