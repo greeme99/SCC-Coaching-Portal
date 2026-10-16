@@ -115,7 +115,6 @@ function ProgramCardLink({ program: p }: { program: ProgramCard }) {
   return (
     <Link
       href={`/dashboard?program=${encodeURIComponent(p.programId)}`}
-      aria-label={`${p.name || p.programId}, ${p.status}, ${period}, 진행 현황 보기`}
       className="flex h-full flex-col rounded-lg bg-surface p-5 shadow-card transition-shadow hover:shadow-hover"
     >
       <span className="text-h3 text-main">{p.name || p.programId}</span>
@@ -133,6 +132,8 @@ function ProgramCardLink({ program: p }: { program: ProgramCard }) {
         다음 일정 {p.stats.nextDate ? shortDate(p.stats.nextDate) : '없음'}
         <ChevronRight size={18} aria-hidden className="text-primary" />
       </span>
+      {/* 링크 이름 = 카드에 보이는 글자 + 목적 (WCAG 2.5.3 보이는 글자와 이름 일치) */}
+      <span className="sr-only">진행 현황 보기</span>
     </Link>
   );
 }

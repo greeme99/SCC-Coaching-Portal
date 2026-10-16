@@ -10,7 +10,7 @@ test.describe('프로그램 개요', () => {
     await page.goto('/program/overview');
     for (const id of ['그림 1. 코칭 여정', '그림 2. 코치 업무 절차']) {
       const card = page.locator('section').filter({ has: page.getByRole('heading', { name: id }) });
-      const svgLabel = await card.locator('svg[role="img"]').first().getAttribute('aria-label');
+      const svgLabel = await card.locator('svg[role="group"]').first().getAttribute('aria-label');
       const listLabels = await card.locator('ol > li > a').allTextContents();
       expect(listLabels.length).toBeGreaterThan(5);
       expect(svgLabel).toContain(listLabels.join(', '));

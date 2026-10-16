@@ -94,7 +94,7 @@ export default async function StagePage({ params }: { params: Promise<Params> })
             {tools.map((tool) => (
               <li key={tool.id} className="flex flex-wrap items-center justify-between gap-3 border-b border-line py-3 last:border-b-0">
                 <span className="min-w-0">
-                  <span className={`mr-2 inline-block rounded-full px-2.5 py-0.5 text-caption ${tool.level === 'primary' ? 'bg-primary-light text-primary' : 'bg-subtle text-body'}`}>
+                  <span className={`mr-2 inline-block rounded-full px-2.5 py-0.5 text-caption ${tool.level === 'primary' ? 'bg-primary-light text-primary-strong' : 'bg-subtle text-body'}`}>
                     {tool.level === 'primary' ? '우선' : '보조'}
                   </span>
                   <span className="font-semibold text-main">{tool.name}</span>

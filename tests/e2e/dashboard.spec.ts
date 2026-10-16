@@ -64,7 +64,7 @@ test('TC-029 기본 접속: 운영중 프로그램만, 카드 내용', async ({ 
   await mockApi(page);
   await page.goto('/dashboard');
   await expect(cards(page)).toHaveCount(1);
-  const card = page.getByRole('link', { name: '예시 커리어 코칭, 운영중, 09.01 ~ 12.15, 진행 현황 보기' });
+  const card = page.getByRole('link', { name: /^예시 커리어 코칭 .*운영중.*09\.01 ~ 12\.15.*진행 현황 보기$/ });
   await expect(card).toContainText('코칭일지 3 / 15');
   await expect(card).toContainText('다음 일정 10.22');
   await expect(page.getByText('마지막 갱신 09:00')).toBeVisible();
