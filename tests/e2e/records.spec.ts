@@ -8,7 +8,10 @@ import { buildPrefillUrl, type PrefillEntries } from '../../lib/prefill';
 
 const CUSTOM = 'https://docs.google.com/forms/d/e/CUSTOM/viewform';
 const form = (id: string) => formsJson.forms.find((f) => f.id === id)!;
-const expected = (id: string, url: string, values: Record<string, string>) => buildPrefillUrl(url, form(id).prefill as PrefillEntries, values);
+// 링크에는 선택한 프로그램 이름도 미리 채워진다 (programName)
+const NAMES: Record<string, string> = { '2026-2-DEMO-CAREER': '예시 커리어 코칭', '2026-1-DEMO-MENTORING': '예시 멘토링' };
+const expected = (id: string, url: string, values: Record<string, string>) =>
+  buildPrefillUrl(url, form(id).prefill as PrefillEntries, { programName: NAMES[values.programId], ...values });
 const PROGRAMS = {
   programs: [
     {
@@ -50,7 +53,7 @@ test('TC-022 코칭일지: 프로그램·고객 코드·회차를 고르면 폼 
   await page.getByLabel('회차', { exact: true }).selectOption('3');
   const link = page.getByRole('link', { name: '구글폼 열기' });
   await expect(link).toHaveAttribute('href', expected('journal', CUSTOM, { programId: '2026-2-DEMO-CAREER', clientCode: 'C01', sessionNo: '3' }));
-  await expect(link).toHaveAttribute('href', /usp=pp_url&entry\.\d+=2026-2-DEMO-CAREER&entry\.\d+=C01&entry\.\d+=3$/);
+  await expect(link).toHaveAttribute('href', /usp=pp_url&entry\.\d+=%EC%98%88%EC%8B%9C\+%EC%BB%A4%EB%A6%AC%EC%96%B4\+%EC%BD%94%EC%B9%AD&entry\.\d+=2026-2-DEMO-CAREER&entry\.\d+=C01&entry\.\d+=3$/);
   await expect(link).toHaveAttribute('target', '_blank');
 });
 
