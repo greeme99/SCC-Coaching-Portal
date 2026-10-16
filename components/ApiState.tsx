@@ -1,6 +1,6 @@
 'use client';
 
-// 대시보드 화면 공통: API 조회 훅, 날짜 표시, 안내·오류 블록
+// 외부 데이터 화면 공통 (대시보드·참조 자료실): API 조회 훅, 날짜 표시, 안내·오류 블록
 import { useEffect, useState, type ReactNode } from 'react';
 
 export type Fetched<T> =
@@ -50,10 +50,10 @@ export function Notice({ children }: { children: ReactNode }) {
   return <p className="mb-4 rounded-md bg-subtle px-4 py-3 text-body">{children}</p>;
 }
 
-export function LoadError({ onRetry }: { onRetry: () => void }) {
+export function LoadError({ onRetry, source = '구글 시트' }: { onRetry: () => void; source?: string }) {
   return (
     <section className="rounded-lg bg-surface p-6 shadow-card">
-      <p className="text-body">구글 시트를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
+      <p className="text-body">{source}를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
       <button type="button" onClick={onRetry} className="mt-4 inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-5 font-semibold text-main hover:bg-subtle">
         다시 시도
       </button>

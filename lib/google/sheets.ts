@@ -1,10 +1,10 @@
-// 구글 시트 읽기 전용 조회 — 서비스 계정 JWT로 토큰을 받아 values.get 호출
-// 범위는 spreadsheets.readonly 하나만 요청한다 (06.development-plan.md §6 최소 권한)
+// 구글 시트·드라이브 읽기 전용 조회 — 서비스 계정 JWT로 토큰을 받아 REST API 호출
+// 범위는 spreadsheets.readonly, drive.metadata.readonly(파일 목록만)만 요청한다 (06.development-plan.md §6 최소 권한)
 // ponytail: googleapis SDK 대신 node:crypto + fetch로 직접 서명. 드라이브 등 API가 늘어나면 SDK 도입 검토
 import { createSign } from 'node:crypto';
 
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
-const SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+const SCOPE = ['https://www.googleapis.com/auth/spreadsheets.readonly', 'https://www.googleapis.com/auth/drive.metadata.readonly'].join(' ');
 
 type ServiceAccount = { client_email: string; private_key: string };
 
@@ -49,11 +49,28 @@ async function accessToken(): Promise<string> {
   return token.value;
 }
 
+// 읽기 전용 GET 요청 (토큰 자동 첨부)
+export async function googleGet<T>(url: string): Promise<T> {
+  const res = await fetch(url, { headers: { authorization: `Bearer ${await accessToken()}` }, cache: 'no-store' });
+  if (!res.ok) throw new Error(`구글 API 조회 실패 (${res.status})`);
+  return (await res.json()) as T;
+}
+
 // 시트 탭 전체를 행 배열로 읽는다. 첫 행이 열 이름
 export async function readSheet(spreadsheetId: string, range: string): Promise<string[][]> {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}/values/${encodeURIComponent(range)}`;
-  const res = await fetch(url, { headers: { authorization: `Bearer ${await accessToken()}` }, cache: 'no-store' });
-  if (!res.ok) throw new Error(`시트 조회 실패 (${res.status})`);
-  const body = (await res.json()) as { values?: string[][] };
-  return body.values ?? [];
+  return (await googleGet<{ values?: string[][] }>(url)).values ?? [];
+}
+
+export type DriveFile = { id: string; name: string; mimeType: string; modifiedTime: string; webViewLink: string };
+
+// 폴더 바로 아래 파일 목록 (하위 폴더·휴지통 제외). 파일 내용은 읽지 않는다
+export async function listFolder(folderId: string): Promise<DriveFile[]> {
+  const params = new URLSearchParams({
+    q: `'${folderId.replace(/'/g, "\\'")}' in parents and trashed = false and mimeType != 'application/vnd.google-apps.folder'`,
+    fields: 'files(id,name,mimeType,modifiedTime,webViewLink)',
+    orderBy: 'name',
+    pageSize: '200',
+  });
+  return (await googleGet<{ files?: DriveFile[] }>(`https://www.googleapis.com/drive/v3/files?${params}`)).files ?? [];
 }
