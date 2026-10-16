@@ -78,7 +78,7 @@ export function ProgramCards() {
         </div>
       )}
 
-      {result.status === 'error' && <LoadError onRetry={reload} />}
+      {result.status === 'error' && <LoadError onRetry={reload} code={result.code} />}
 
       {result.status === 'ok' && (
         <>

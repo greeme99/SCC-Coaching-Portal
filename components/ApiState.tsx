@@ -50,10 +50,15 @@ export function Notice({ children }: { children: ReactNode }) {
   return <p className="mb-4 rounded-md bg-subtle px-4 py-3 text-body">{children}</p>;
 }
 
-export function LoadError({ onRetry, source = '구글 시트' }: { onRetry: () => void; source?: string }) {
+// code 503 = 서버에 구글 연결 설정(서비스 계정 키·시트 ID)이 없음 — 일시적 장애와 구분해 안내한다
+export function LoadError({ onRetry, source = '구글 시트', code }: { onRetry: () => void; source?: string; code?: number }) {
   return (
     <section className="rounded-lg bg-surface p-6 shadow-card">
-      <p className="text-body">{source}를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
+      <p className="text-body">
+        {code === 503
+          ? `${source} 연결 설정이 아직 완료되지 않았습니다. 관리자가 서비스 계정을 연결하면 표시됩니다.`
+          : `${source}를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.`}
+      </p>
       <button type="button" onClick={onRetry} className="mt-4 inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-5 font-semibold text-main hover:bg-subtle">
         다시 시도
       </button>

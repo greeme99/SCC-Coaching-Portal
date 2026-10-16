@@ -68,7 +68,7 @@ export function ProgressTable({ programId }: { programId: string }) {
               <p className="mt-2 text-body">주소의 프로그램 ID를 확인하거나 프로그램 현황에서 다시 선택해 주세요.</p>
             </section>
           ) : (
-            <LoadError onRetry={reload} />
+            <LoadError onRetry={reload} code={result.code} />
           )}
         </div>
       </>

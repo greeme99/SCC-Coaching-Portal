@@ -57,7 +57,7 @@ export function ReferenceList() {
         </div>
       )}
 
-      {result.status === 'error' && <LoadError onRetry={reload} source="구글 드라이브" />}
+      {result.status === 'error' && <LoadError onRetry={reload} source="구글 드라이브" code={result.code} />}
 
       {result.status === 'ok' && (
         <>

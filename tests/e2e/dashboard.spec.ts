@@ -108,6 +108,14 @@ test('TC-033 조회 실패 → 오류 안내 + 다시 시도', async ({ page }) 
   await expect(cards(page)).toHaveCount(1);
 });
 
+test('구글 연결 설정이 없으면(503) 설정 안내를 보여준다', async ({ page }) => {
+  // 테스트 서버에는 서비스 계정 설정이 없어 실제 API가 503을 돌려준다 — 가짜 응답 없이 확인
+  await page.goto('/dashboard');
+  await expect(page.getByText('구글 시트 연결 설정이 아직 완료되지 않았습니다.', { exact: false })).toBeVisible();
+  await page.goto('/references');
+  await expect(page.getByText('구글 드라이브 연결 설정이 아직 완료되지 않았습니다.', { exact: false })).toBeVisible();
+});
+
 test('TC-034·037 카드 → 진행 현황표, 제출·예정일 지남 표시와 안내', async ({ page }) => {
   await mockApi(page);
   await page.goto('/dashboard');
