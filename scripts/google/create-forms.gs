@@ -153,14 +153,18 @@ function replaceProgramPlaceholder() {
   for (let r = 1; r < values.length; r++) {
     const form = FormApp.openByUrl(values[r][editCol]);
     let count = 0;
-    if (form.getTitle() !== fix(form.getTitle())) { form.setTitle(fix(form.getTitle())); count++; }
+    // 폼 제목 속성이 비어 있으면 화면 상단에는 드라이브 파일 이름이 보인다 — 둘 다 고친다
+    const file = DriveApp.getFileById(form.getId());
+    const title = fix(form.getTitle() || file.getName());
+    if (form.getTitle() !== title) { form.setTitle(title); count++; }
+    if (file.getName() !== title) { file.setName(title); count++; }
     if (form.getDescription() !== fix(form.getDescription())) { form.setDescription(fix(form.getDescription())); count++; }
     form.getItems().forEach(function (item) {
       if (item.getTitle() !== fix(item.getTitle())) { item.setTitle(fix(item.getTitle())); count++; }
       if (item.getHelpText() !== fix(item.getHelpText())) { item.setHelpText(fix(item.getHelpText())); count++; }
     });
-    config.getRange(r + 1, titleCol + 1).setValue(form.getTitle());
-    Logger.log(values[r][0] + ': ' + count + '곳 수정 → ' + form.getTitle());
+    config.getRange(r + 1, titleCol + 1).setValue(title);
+    Logger.log(values[r][0] + ': ' + count + '곳 수정 → ' + title);
   }
   Logger.log('완료');
 }
