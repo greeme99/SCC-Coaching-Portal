@@ -65,7 +65,6 @@ export type NavGroup =
   | { title: string; kind: 'coaching' };
 
 export const NAV_GROUPS: NavGroup[] = [
-  { title: '대시보드', kind: 'links', links: [{ href: '/dashboard', label: '프로그램 현황', icon: 'chart' }] },
   { title: '프로그램', kind: 'links', links: [{ href: '/program/overview', label: '프로그램 개요', icon: 'home' }] },
   { title: '코칭 모델', kind: 'coaching' },
   {
@@ -78,6 +77,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: '/records/client-reflection', label: '피코치 종료소감', icon: 'share' },
     ],
   },
+  // 대시보드는 일지·소감 다음 — 기록을 남긴 뒤 제출 현황을 확인하는 흐름 (DEC-026)
+  { title: '대시보드', kind: 'links', links: [{ href: '/dashboard', label: '프로그램 현황', icon: 'chart' }] },
   { title: '코치 도구', kind: 'links', links: [{ href: '/tools', label: '코칭 툴 나눔터', icon: 'globe' }] },
   { title: '자료', kind: 'links', links: [{ href: '/references', label: '참조 자료실', icon: 'book' }] },
 ];

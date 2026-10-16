@@ -8,10 +8,10 @@ test.describe('앱 셸·사이드바', () => {
     const nav = page.getByRole('navigation', { name: '주 메뉴' });
     await expect(nav).toBeInViewport();
     await expect(nav.getByRole('heading', { level: 2 })).toHaveText([
-      '대시보드',
       '프로그램',
       '코칭 모델',
       '일지·소감',
+      '대시보드',
       '코치 도구',
       '자료',
     ]);
