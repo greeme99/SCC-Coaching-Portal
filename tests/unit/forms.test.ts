@@ -28,9 +28,25 @@ describe('질의 항목 원문 일치 (docs/forms/)', () => {
     for (const text of texts.filter(Boolean)) expect(original, text).toContain(normalize(text));
   });
   it('원문 문항 수와 미리보기 문항 수가 같다', () => {
-    expect(formById('journal').questions).toHaveLength(10);
+    // 코칭일지·완료 보고서는 원문의 고객 성함 문항을 빼고 고객 코드(prefill)로 대체 (CLAUDE.md §7)
+    expect(formById('journal').questions).toHaveLength(9);
+    expect(formById('final-report').questions).toHaveLength(11);
     expect(formById('coach-reflection').questions).toHaveLength(12);
     expect(formById('client-reflection').questions).toHaveLength(12);
+  });
+});
+
+describe('개인정보 (CLAUDE.md §7)', () => {
+  it('어느 폼에도 고객 이름을 묻는 문항이 없다', () => {
+    for (const form of FORMS) for (const q of form.questions) expect(q.title, form.id).not.toMatch(/고객.*성함/);
+  });
+});
+
+describe('구글폼 생성 스크립트 (scripts/google/create-forms.gs)', () => {
+  it('forms.json으로 만든 최신 상태다 — 다르면 node scripts/google/build-forms-script.mjs 실행', async () => {
+    const { buildScript } = await import('../../scripts/google/build-forms-script.mjs');
+    const json = JSON.parse(readFileSync(new URL('../../content/forms.json', import.meta.url), 'utf8'));
+    expect(readFileSync(new URL('../../scripts/google/create-forms.gs', import.meta.url), 'utf8')).toBe(buildScript(json));
   });
 });
 

@@ -2,8 +2,13 @@ import { expect, test, type Page } from '@playwright/test';
 
 // TC-022 ~ TC-028 (docs/development/07.test-plan.md)
 // 구글 시트 연결 없이 검사하도록 API-001 응답을 가짜 데이터로 바꿔 끼운다
-// 공용 폼 주소(forms.json formUrl)가 아직 비어 있어, 링크는 프로그램 전용 폼 주소로 확인한다
+// DEMO-CAREER는 프로그램 전용 폼(CUSTOM), DEMO-MENTORING은 공용 폼(forms.json formUrl)을 쓰는 경우를 검사한다
+import formsJson from '../../content/forms.json';
+import { buildPrefillUrl, type PrefillEntries } from '../../lib/prefill';
+
 const CUSTOM = 'https://docs.google.com/forms/d/e/CUSTOM/viewform';
+const form = (id: string) => formsJson.forms.find((f) => f.id === id)!;
+const expected = (id: string, url: string, values: Record<string, string>) => buildPrefillUrl(url, form(id).prefill as PrefillEntries, values);
 const PROGRAMS = {
   programs: [
     {
@@ -32,7 +37,7 @@ test('질의 항목 미리보기: 원문 문항과 더 보기', async ({ page })
   await page.goto('/records/journal');
   await expect(page.getByText('삼코동 [OO 코칭 프로그램] 회차별 코칭 일지')).toBeVisible();
   await expect(page.getByText('코치(멘토) 성함')).toBeVisible();
-  const more = page.getByText('더 보기 (6개 문항)');
+  const more = page.getByText('더 보기 (5개 문항)');
   await more.click();
   await expect(page.getByText('삼코동 운영팀에게 전달 및 요청 사항')).toBeVisible();
 });
@@ -44,7 +49,8 @@ test('TC-022 코칭일지: 프로그램·고객 코드·회차를 고르면 폼 
   await page.getByLabel('고객 코드').selectOption('C01');
   await page.getByLabel('회차', { exact: true }).selectOption('3');
   const link = page.getByRole('link', { name: '구글폼 열기' });
-  await expect(link).toHaveAttribute('href', CUSTOM);
+  await expect(link).toHaveAttribute('href', expected('journal', CUSTOM, { programId: '2026-2-DEMO-CAREER', clientCode: 'C01', sessionNo: '3' }));
+  await expect(link).toHaveAttribute('href', /usp=pp_url&entry\.\d+=2026-2-DEMO-CAREER&entry\.\d+=C01&entry\.\d+=3$/);
   await expect(link).toHaveAttribute('target', '_blank');
 });
 
@@ -85,8 +91,11 @@ test('TC-057 코칭일지: 추가 회차를 고르고 번호를 입력하면 폼
   await input.fill('3');
   await expect(page.getByRole('button', { name: '구글폼 열기' })).toHaveAccessibleDescription('추가 회차 번호를 4 ~ 99 사이 숫자로 입력하세요');
   await input.fill('4');
-  // DEMO-MENTORING은 전용 폼이 없고 공용 폼 주소도 아직 비어 있어, 값이 다 갖춰지면 주소 미등록 안내로 바뀐다
-  await expect(page.getByRole('button', { name: '구글폼 열기' })).toHaveAccessibleDescription('구글폼 주소가 아직 등록되지 않았습니다');
+  // DEMO-MENTORING은 전용 폼이 없어 공용 폼으로 연다
+  await expect(page.getByRole('link', { name: '구글폼 열기' })).toHaveAttribute(
+    'href',
+    expected('journal', form('journal').formUrl, { programId: '2026-1-DEMO-MENTORING', clientCode: 'M01', sessionNo: '4' }),
+  );
 });
 
 test('TC-057 코칭일지: 전용 폼이 있으면 추가 회차로 링크가 생긴다', async ({ page }) => {
@@ -96,7 +105,10 @@ test('TC-057 코칭일지: 전용 폼이 있으면 추가 회차로 링크가 �
   await page.getByLabel('고객 코드').selectOption('C01');
   await page.getByLabel('회차', { exact: true }).selectOption('extra');
   await page.getByLabel('추가 회차 번호').fill('6');
-  await expect(page.getByRole('link', { name: '구글폼 열기' })).toHaveAttribute('href', CUSTOM);
+  await expect(page.getByRole('link', { name: '구글폼 열기' })).toHaveAttribute(
+    'href',
+    expected('journal', CUSTOM, { programId: '2026-2-DEMO-CAREER', clientCode: 'C01', sessionNo: '6' }),
+  );
 });
 
 test('TC-026 피코치 종료소감: 링크 복사 후 토스트, 이름·이메일 없음', async ({ page, context }) => {
@@ -109,7 +121,7 @@ test('TC-026 피코치 종료소감: 링크 복사 후 토스트, 이름·이메
   await page.getByRole('button', { name: '링크 복사' }).click();
   await expect(page.getByRole('status')).toHaveText('링크를 복사했습니다');
   const copied = await page.evaluate(() => navigator.clipboard.readText());
-  expect(copied).toBe(CUSTOM);
+  expect(copied).toBe(expected('client-reflection', CUSTOM, { programId: '2026-2-DEMO-CAREER', clientCode: 'C01' }));
   expect(copied).not.toMatch(/@|name|email/i);
 });
 
@@ -123,7 +135,7 @@ test('TC-027 클립보드를 쓸 수 없으면 링크 상자를 선택 상태로
   await page.getByLabel('고객 코드').selectOption('C01');
   await page.getByRole('button', { name: '링크 복사' }).click();
   const box = page.getByLabel('아래 링크를 복사해 전달하세요');
-  await expect(box).toHaveValue(CUSTOM);
+  await expect(box).toHaveValue(expected('client-reflection', CUSTOM, { programId: '2026-2-DEMO-CAREER', clientCode: 'C01' }));
   await expect(box).toBeFocused();
 });
 
@@ -131,8 +143,8 @@ test('TC-028 목록 조회 실패: 안내 문구를 보여준다', async ({ page
   await mockPrograms(page, 502);
   await page.goto('/records/journal');
   await expect(page.getByText('목록을 불러오지 못했습니다')).toBeVisible();
-  // 공용 폼 주소가 등록되기 전이라 [값 없이 구글폼 열기] 대신 비활성 버튼과 이유가 나온다
-  await expect(page.getByRole('button', { name: '구글폼 열기' })).toHaveAccessibleDescription('구글폼 주소가 아직 등록되지 않았습니다');
+  // 값을 고를 수 없으므로 공용 폼을 값 없이 열어 직접 입력하게 한다
+  await expect(page.getByRole('link', { name: '값 없이 구글폼 열기' })).toHaveAttribute('href', form('journal').formUrl);
 });
 
 test('API-001: 시트 설정이 없으면 503 MISCONFIGURED', async ({ request }) => {
