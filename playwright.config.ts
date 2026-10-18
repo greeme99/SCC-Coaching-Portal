@@ -10,7 +10,8 @@ export default defineConfig({
   reporter: 'list',
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
-    httpCredentials: { username: 'coach', password: TEST_PASSWORD },
+    // 자동 테스트는 모든 요청에 Basic 헤더를 붙여 로그인 화면을 건너뛴다 (화면 로그인은 auth.spec.ts에서 따로 검사)
+    extraHTTPHeaders: { authorization: `Basic ${Buffer.from(`coach:${TEST_PASSWORD}`).toString('base64')}` },
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
