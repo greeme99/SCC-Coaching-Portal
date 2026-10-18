@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { Suspense, useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Sidebar, SidebarFallback } from './Sidebar';
@@ -38,6 +39,7 @@ function subscribeDesktop(onChange: () => void) {
 const noopSubscribe = () => () => {};
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const desktop = useSyncExternalStore(subscribeDesktop, isDesktop, () => null);
   // 데스크톱에서만 저장된 선택을 되살린다. 모바일은 항상 접힌 상태로 시작
   const saved = useSyncExternalStore(noopSubscribe, readPreference, () => null);
@@ -97,6 +99,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const sidebarVisible = state === 'auto' ? desktop !== false : state === 'open';
   const drawerOpen = state === 'open' && desktop === false;
+
+  // 로그인 화면은 메뉴 없이 단독으로 보여준다 (메뉴 구조도 로그인 전에는 감춘다)
+  if (pathname === '/login') return <main id="main">{children}</main>;
 
   return (
     <div className="app-shell" data-sidebar={state}>
