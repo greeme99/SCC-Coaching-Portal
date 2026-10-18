@@ -56,12 +56,11 @@ test.describe('로그인 화면', () => {
   // 이 묶음은 자동 비밀번호 헤더 없이 실제 코치처럼 화면에서 입력한다
   test.use({ extraHTTPHeaders: {} });
 
-  test('메인 화면에서 입장하면 메인 화면이 열린다 (DEC-030)', async ({ page }) => {
+  test('주소 없이 입장하면 메인 화면(프로그램 개요)이 열린다 (DEC-030)', async ({ page }) => {
     await page.goto('/');
     await page.getByLabel('공용 비밀번호를 입력해 주세요').fill(TEST_PASSWORD);
     await page.getByRole('button', { name: '입장하기' }).click();
-    await expect(page.getByText('왼쪽 메뉴에서 원하는 항목을 선택하세요.')).toBeVisible();
-    await expect(page).toHaveURL(/:\d+\/$/);
+    await expect(page).toHaveURL(/\/program\/overview$/);
   });
 
   test('첫 접속: 로고·환영 문구·비밀번호 칸만 보이고 메뉴는 없다', async ({ page }) => {
@@ -99,8 +98,8 @@ test.describe('로그인 화면', () => {
     await page.getByRole('button', { name: '입장하기' }).click();
     await expect(page).toHaveURL(/\/records\/journal$/);
     await expect(page.getByRole('navigation', { name: '주 메뉴' })).toBeVisible();
-    // 세션 쿠키로 다시 입력하지 않는다. 로그인 화면을 열면 메인 화면으로 보낸다
+    // 세션 쿠키로 다시 입력하지 않는다. 로그인 화면을 열면 메인 화면(프로그램 개요)으로 보낸다
     await page.goto('/login');
-    await expect(page).toHaveURL(/:\d+\/$/);
+    await expect(page).toHaveURL(/\/program\/overview$/);
   });
 });
