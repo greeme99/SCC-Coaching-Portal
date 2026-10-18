@@ -22,8 +22,8 @@ export async function proxy(request: NextRequest) {
   }
 
   if (PUBLIC_PATHS.has(pathname)) {
-    // 이미 들어온 코치가 로그인 화면을 열면 대시보드로 보낸다
-    if (result === 'ok' && pathname === '/login') return NextResponse.redirect(sameHost(request, '/dashboard'));
+    // 이미 들어온 코치가 로그인 화면을 열면 메인 화면으로 보낸다
+    if (result === 'ok' && pathname === '/login') return NextResponse.redirect(sameHost(request, '/'));
     return NextResponse.next();
   }
 

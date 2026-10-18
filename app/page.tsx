@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-// 첫 화면은 대시보드 (03.IA §4)
+// 메인 화면은 프로그램 개요 (DEC-030). 입장 후·로고 클릭 모두 여기서 시작해 사이드 메뉴로 이동한다
 export default function Home() {
-  redirect('/dashboard');
+  redirect('/program/overview');
 }

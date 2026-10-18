@@ -35,7 +35,7 @@ test.describe('접근 비밀번호 — 요청 단위', () => {
     const body = new URLSearchParams({ password: TEST_PASSWORD, next: '//evil.example/x' });
     const res = await fetch(`${baseURL}/api/login`, { method: 'POST', body, redirect: 'manual' });
     expect(res.status).toBe(303);
-    expect(new URL(res.headers.get('location')!, baseURL).pathname).toBe('/dashboard');
+    expect(new URL(res.headers.get('location')!, baseURL).pathname).toBe('/');
     // 쿠키는 자바스크립트로 읽을 수 없게 만든다
     expect(res.headers.get('set-cookie')).toMatch(/scd_session=.+HttpOnly/i);
   });
@@ -56,6 +56,13 @@ test.describe('로그인 화면', () => {
   // 이 묶음은 자동 비밀번호 헤더 없이 실제 코치처럼 화면에서 입력한다
   test.use({ extraHTTPHeaders: {} });
 
+  test('주소 없이 입장하면 메인 화면(프로그램 개요)이 열린다 (DEC-030)', async ({ page }) => {
+    await page.goto('/');
+    await page.getByLabel('공용 비밀번호를 입력해 주세요').fill(TEST_PASSWORD);
+    await page.getByRole('button', { name: '입장하기' }).click();
+    await expect(page).toHaveURL(/\/program\/overview$/);
+  });
+
   test('첫 접속: 로고·환영 문구·비밀번호 칸만 보이고 메뉴는 없다', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveURL(/\/login$/);
@@ -75,10 +82,10 @@ test.describe('로그인 화면', () => {
   });
 
   test('TC-008 틀린 비밀번호 → 안내 후 다시 입력', async ({ page }) => {
-    await page.goto('/dashboard');
+    await page.goto('/');
     await page.getByLabel('공용 비밀번호를 입력해 주세요').fill('wrong');
     await page.getByRole('button', { name: '입장하기' }).click();
-    // 대시보드는 기본 이동 주소라 next를 붙이지 않는다
+    // 메인 화면은 기본 이동 주소라 next를 붙이지 않는다
     await expect(page).toHaveURL(/\/login\?error=1$/);
     // Next.js의 화면 이동 안내(route announcer)도 alert라 문구로 찾는다
     await expect(page.getByText('비밀번호가 맞지 않습니다. 다시 입력해 주세요.')).toHaveAttribute('role', 'alert');
@@ -91,8 +98,8 @@ test.describe('로그인 화면', () => {
     await page.getByRole('button', { name: '입장하기' }).click();
     await expect(page).toHaveURL(/\/records\/journal$/);
     await expect(page.getByRole('navigation', { name: '주 메뉴' })).toBeVisible();
-    // 세션 쿠키로 다시 입력하지 않는다. 로그인 화면을 열면 대시보드로 보낸다
+    // 세션 쿠키로 다시 입력하지 않는다. 로그인 화면을 열면 메인 화면(프로그램 개요)으로 보낸다
     await page.goto('/login');
-    await expect(page).toHaveURL(/\/dashboard$/);
+    await expect(page).toHaveURL(/\/program\/overview$/);
   });
 });

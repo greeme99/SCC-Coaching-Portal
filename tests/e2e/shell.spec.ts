@@ -80,8 +80,12 @@ test.describe('앱 셸·사이드바', () => {
     }
   });
 
-  test('첫 화면은 대시보드로 이동', async ({ page }) => {
+  test('첫 화면은 프로그램 개요, 로고를 눌러도 프로그램 개요 (DEC-030)', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveURL('/dashboard');
+    await expect(page).toHaveURL('/program/overview');
+    await expect(page.getByRole('heading', { level: 1, name: '프로그램 개요' })).toBeVisible();
+    await page.goto('/dashboard');
+    await page.getByRole('link', { name: /삼코동 코칭 포털/ }).first().click();
+    await expect(page).toHaveURL('/program/overview');
   });
 });

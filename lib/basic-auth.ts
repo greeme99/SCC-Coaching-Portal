@@ -42,10 +42,10 @@ export async function sessionToken(password: string): Promise<string> {
   return Buffer.from(signature).toString('base64url');
 }
 
-// 로그인 뒤 돌아갈 주소. 같은 사이트 안의 경로만 허용한다 (다른 사이트로 보내는 공격 방지)
+// 로그인 뒤 돌아갈 주소. 같은 사이트 안의 경로만 허용하고, 없으면 메인 화면 (다른 사이트로 보내는 공격 방지)
 export function safeNext(value: unknown): string {
   if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.includes('\\') || value.startsWith('/login')) {
-    return '/dashboard';
+    return '/';
   }
   return value;
 }

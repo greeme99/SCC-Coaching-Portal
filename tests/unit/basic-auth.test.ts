@@ -57,10 +57,10 @@ describe('세션 쿠키와 돌아갈 주소', () => {
     expect(token).not.toContain('my-secret');
     expect(token).toBe(await sessionToken('my-secret'));
   });
-  it('같은 사이트 경로만 허용하고 나머지는 대시보드로', () => {
+  it('같은 사이트 경로만 허용하고 나머지는 메인 화면으로', () => {
     expect(safeNext('/records/journal?x=1')).toBe('/records/journal?x=1');
     for (const value of [null, '', 'https://evil.example', '//evil.example', '/\\evil', '/login', '/login?next=/x']) {
-      expect(safeNext(value), String(value)).toBe('/dashboard');
+      expect(safeNext(value), String(value)).toBe('/');
     }
   });
 });
