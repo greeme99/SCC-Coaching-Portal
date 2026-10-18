@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     // ponytail: 요청 횟수 제한 없음, 무차별 대입이 보이면 Vercel 방화벽 규칙(무료) 추가
     await new Promise((resolve) => setTimeout(resolve, 500));
     const back = new URLSearchParams({ error: '1' });
-    if (next !== '/dashboard') back.set('next', next);
+    if (next !== '/') back.set('next', next);
     return redirectTo(`/login?${back}`, 303);
   }
 

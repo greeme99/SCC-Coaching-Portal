@@ -5,6 +5,7 @@ import { expect, test, type Page } from '@playwright/test';
 // 외부 데이터 화면은 API 응답을 가짜로 바꿔 내용이 채워진 상태로 검사한다
 
 const PAGES = [
+  '/',
   '/dashboard',
   '/dashboard?program=2026-2-DEMO-CAREER',
   '/program/overview',

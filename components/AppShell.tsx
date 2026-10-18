@@ -124,7 +124,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         >
           <Menu size={22} strokeWidth={1.75} aria-hidden />
         </button>
-        <Link href="/dashboard" className="flex min-w-0 items-center gap-2" onClick={onNavigate}>
+        <Link href="/" className="flex min-w-0 items-center gap-2" onClick={onNavigate}>
           <Image
             src="/brand/samkodong-logo-original.svg"
             alt="삼코동 Samsung Coaching Club"
