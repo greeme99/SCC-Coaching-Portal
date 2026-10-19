@@ -67,7 +67,10 @@ test.describe('로그인 화면', () => {
     await page.goto('/');
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole('img', { name: '삼코동 Samsung Coaching Club' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1, name: '삼코동 코칭 포털에 오신 것을 환영합니다' })).toBeVisible();
+    // 랜딩 C안(DEC-031): 대표 문구가 h1, 입장 카드의 환영 문구는 h2
+    await expect(page.getByRole('heading', { level: 1, name: '더 나은 내일로 향하는 코칭 가이드' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: '삼코동 코칭 포털에 오신 것을 환영합니다' })).toBeVisible();
+    await expect(page.getByRole('img', { name: /북극성으로 이어지는 풍경/ })).toBeVisible();
     await expect(page.getByText('코치 전용 공간 접속하기')).toBeVisible();
     await expect(page.getByLabel('공용 비밀번호를 입력해 주세요')).toBeVisible();
     await expect(page.getByRole('navigation', { name: '주 메뉴' })).toHaveCount(0);
