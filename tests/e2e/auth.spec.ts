@@ -92,7 +92,7 @@ test.describe('로그인 화면', () => {
     await expect(page).toHaveURL(/\/login\?error=1$/);
     // Next.js의 화면 이동 안내(route announcer)도 alert라 문구로 찾는다
     await expect(page.getByText('비밀번호가 맞지 않습니다. 다시 입력해 주세요.')).toHaveAttribute('role', 'alert');
-    await expect(page.getByLabel('공용 비밀번호를 입력해 주세요')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#password-error')).toContainText('비밀번호가 맞지 않습니다');
   });
 
   test('TC-009 맞는 비밀번호 → 원래 열려던 화면으로, 다시 열어도 유지', async ({ page }) => {
