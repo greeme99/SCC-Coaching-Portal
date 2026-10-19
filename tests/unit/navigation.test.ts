@@ -15,7 +15,7 @@ import {
 
 describe('사이드 메뉴 구조 (DEC-011)', () => {
   it('묶음 순서가 확정안과 같다', () => {
-    expect(NAV_GROUPS.map((g) => g.title)).toEqual(['프로그램', '코칭 모델', '일지·소감', '대시보드', '코치 도구', '자료']);
+    expect(NAV_GROUPS.map((g) => g.title)).toEqual(['프로그램', '코칭 모델', '일지·소감', '대시보드', '코치 도구', '자료', '설정']);
   });
   it('코칭 모델은 3유형 × 7단계', () => {
     expect(COACHING_TYPES).toHaveLength(3);
