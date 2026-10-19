@@ -60,6 +60,7 @@ UI/디자인 작업 관련 요청 수신 시, 코딩 개시 전 아래 순서로
   --color-text-main: #0f172a;       /* Slate 900 (Main Title) */
   --color-text-body: #334155;       /* Slate 700 (Body Text) */
   --color-text-muted: #64748b;      /* Slate 500 (Subtext/Caption) — WCAG AA 대비 4.5:1 충족 (DEC-028, 원래 Slate 400) */
+  --color-brand-star: #f8b62d;      /* 삼코동 로고의 노란 별 — 입장 화면 그림의 북극성에만 사용 (DEC-031). 두 테마 같은 값 */
   --color-text-on-primary: #ffffff; /* White Text on Primary Accent */
 }
 ```

@@ -24,6 +24,9 @@
   /* WCAG AA 대비(4.5:1) 충족을 위해 Slate 400 → Slate 500 (DEC-028) */
   --color-text-muted: #64748b;
   --color-text-on-primary: #ffffff;
+
+  /* 삼코동 로고의 노란 별 색 — 입장 화면 그림의 '북극성'에만 쓴다 (DEC-031) */
+  --color-brand-star: #f8b62d;
 }
 
 /* 다크 토큰은 정의만 한다. 전환 UI는 2차 범위 (FR-013) */
@@ -49,4 +52,6 @@
   /* 어두운 바탕 대비를 위해 Slate 500 → Slate 400 (DEC-028) */
   --color-text-muted: #94a3b8;
   --color-text-on-primary: #ffffff;
+
+  --color-brand-star: #f8b62d;
 }
