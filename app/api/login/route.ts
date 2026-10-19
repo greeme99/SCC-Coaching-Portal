@@ -5,7 +5,8 @@ import { SESSION_COOKIE, SESSION_MAX_AGE, constantTimeEqual, redirectTo, safeNex
 export async function POST(request: Request) {
   const form = await request.formData();
   const password = form.get('password');
-  const next = safeNext(form.get('next'));
+  // 돌아갈 주소: 폼 값이 있으면 그것, 없으면 입장 화면 주소(/login?next=…)에서 읽는다
+  const next = safeNext(form.get('next') ?? nextFromReferer(request.headers.get('referer')));
   const expected = process.env.SITE_PASSWORD;
   if (!expected) return redirectTo('/login', 303);
 
@@ -27,4 +28,13 @@ export async function POST(request: Request) {
     maxAge: SESSION_MAX_AGE,
   });
   return response;
+}
+
+function nextFromReferer(referer: string | null): string | null {
+  if (!referer) return null;
+  try {
+    return new URL(referer).searchParams.get('next');
+  } catch {
+    return null;
+  }
 }

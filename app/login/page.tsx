@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Suspense } from 'react';
 import { JourneyIllustration } from '@/components/JourneyIllustration';
-import { LoginForm } from '@/components/LoginForm';
+import { LoginError, LoginForm } from '@/components/LoginForm';
 
 export const metadata: Metadata = { title: '입장하기' };
 
-type SearchParams = Promise<{ next?: string | string[]; error?: string | string[] }>;
+type SearchParams = Promise<{ error?: string | string[] }>;
 
 // 코칭 여정 3단계 — 포털 기능(가이드 → 일지 → 종료 리포트·소감)을 그대로 소개한다
 const STEPS = [
@@ -45,10 +45,14 @@ export default function LoginPage({ searchParams }: { searchParams: SearchParams
             삼코동 코칭 포털에 오신 것을 환영합니다
           </h2>
           <p className="mt-2 text-body">코치 전용 공간 접속하기</p>
-          {/* 주소의 next·error는 요청 시점에 서버에서 채운다 — 화면이 다 뜨기 전에 눌러도 돌아갈 주소가 빠지지 않게 */}
-          <Suspense fallback={<LoginForm next="" error={false} />}>
-            <LoginFormWithParams searchParams={searchParams} />
-          </Suspense>
+          {/* 오류 문구만 요청 시점에 채운다 (주소의 error). 입력 칸은 고정이라 미리 친 비밀번호가 지워지지 않는다 */}
+          <LoginForm
+            errorSlot={
+              <Suspense fallback={null}>
+                <ErrorFromParams searchParams={searchParams} />
+              </Suspense>
+            }
+          />
           <p className="mt-6 text-center text-caption text-muted">코치 전용 공간입니다. 비밀번호는 운영진에게 문의하세요.</p>
         </section>
       </section>
@@ -90,7 +94,7 @@ export default function LoginPage({ searchParams }: { searchParams: SearchParams
   );
 }
 
-async function LoginFormWithParams({ searchParams }: { searchParams: SearchParams }) {
-  const { next, error } = await searchParams;
-  return <LoginForm next={typeof next === 'string' ? next : ''} error={error === '1'} />;
+async function ErrorFromParams({ searchParams }: { searchParams: SearchParams }) {
+  const { error } = await searchParams;
+  return error === '1' ? <LoginError /> : null;
 }
