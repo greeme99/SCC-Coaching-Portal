@@ -1,4 +1,4 @@
-# CLAUDE.md — SCD Coaching Portal
+# CLAUDE.md — SCC Coaching Portal
 
 > Claude Code가 이 저장소에서 작업할 때 따르는 프로젝트 지침이다.
 > 원본: `코칭 포털 프로젝트 에이전트 v1` 지침 → Claude Code용으로 재구성.

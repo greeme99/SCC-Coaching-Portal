@@ -1,4 +1,4 @@
-# Plan.md — SCD Coaching Portal 개발 계획 (요약)
+# Plan.md — SCC Coaching Portal 개발 계획 (요약)
 
 > 이 초안은 2026-10-15 개발 문서 패키지로 흡수되었다 (DEC-001). 상세 내용은 아래 문서를 기준으로 한다.
 

@@ -151,7 +151,7 @@ UI/디자인 작업 관련 요청 수신 시, 코딩 개시 전 아래 순서로
 
 ### 1) Navigation & Sidebar
 
-- **Active Navigation Item**: Background `var(--color-primary-light)`, Color `var(--color-primary-hover)` (연한 파랑 위 글자 대비 AA 충족, DEC-028), Font Weight `600`, Radius `10px`, 그림자 없음 (SCD Coaching Portal 결정 DEC-014: 메뉴가 많아 진한 배경 대신 연한 배경 사용)
+- **Active Navigation Item**: Background `var(--color-primary-light)`, Color `var(--color-primary-hover)` (연한 파랑 위 글자 대비 AA 충족, DEC-028), Font Weight `600`, Radius `10px`, 그림자 없음 (SCC Coaching Portal 결정 DEC-014: 메뉴가 많아 진한 배경 대신 연한 배경 사용)
 - **Inactive Item**: Color `var(--color-text-muted)`, Hover Background `var(--color-bg-subtle)`
 
 ### 2) KPI Summary Cards
