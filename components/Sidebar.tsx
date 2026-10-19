@@ -10,6 +10,7 @@ import {
   FileText,
   Globe,
   House,
+  LogOut,
   MessageCircle,
   PenLine,
   Share2,
@@ -95,6 +96,14 @@ export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
                 );
               })}
             </ul>
+          ) : group.kind === 'settings' ? (
+            // 로그아웃: 세션 쿠키를 지우고 입장 화면으로 (DEC-032). 자바스크립트 없이도 동작하는 폼 전송
+            <form method="post" action="/api/logout">
+              <button type="submit" className={`${itemBase} w-full text-left`}>
+                <LogOut size={20} strokeWidth={1.75} aria-hidden className="shrink-0" />
+                로그아웃
+              </button>
+            </form>
           ) : (
             COACHING_TYPES.map((type) => {
               const info = COACHING_TYPE_INFO[type];

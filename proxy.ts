@@ -3,7 +3,7 @@ import { SESSION_COOKIE, checkAccess } from '@/lib/basic-auth';
 import { isKnownDynamicPath } from '@/lib/navigation';
 
 // 로그인 없이 열리는 주소: 로그인 화면과 비밀번호 확인 API
-const PUBLIC_PATHS = new Set(['/login', '/api/login']);
+const PUBLIC_PATHS = new Set(['/login', '/api/login', '/api/logout']);
 
 // 모든 화면·API 앞에서 공용 비밀번호(세션 쿠키)를 확인한다 (FN-002, DEC-029). 로고·폰트 등 정적 파일은 통과
 export async function proxy(request: NextRequest) {

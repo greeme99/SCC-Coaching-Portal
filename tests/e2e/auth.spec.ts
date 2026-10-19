@@ -105,4 +105,17 @@ test.describe('로그인 화면', () => {
     await page.goto('/login');
     await expect(page).toHaveURL(/\/program\/overview$/);
   });
+
+  test('설정 > 로그아웃 → 입장 화면, 다시 열면 비밀번호를 묻는다 (DEC-032)', async ({ page }) => {
+    await page.goto('/program/overview');
+    await page.getByLabel('공용 비밀번호를 입력해 주세요').fill(TEST_PASSWORD);
+    await page.getByRole('button', { name: '입장하기' }).click();
+    await expect(page).toHaveURL(/\/program\/overview$/);
+    const nav = page.getByRole('navigation', { name: '주 메뉴' });
+    await expect(nav.getByRole('heading', { level: 2, name: '설정' })).toBeAttached();
+    await nav.getByRole('button', { name: '로그아웃' }).click();
+    await expect(page).toHaveURL(/\/login$/);
+    await page.goto('/dashboard');
+    await expect(page).toHaveURL(/\/login\?next=%2Fdashboard$/);
+  });
 });

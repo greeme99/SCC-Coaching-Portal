@@ -62,7 +62,8 @@ export type NavIcon = 'chart' | 'home' | 'pencil' | 'file' | 'message' | 'share'
 export type NavLink = { href: string; label: string; icon: NavIcon };
 export type NavGroup =
   | { title: string; kind: 'links'; links: NavLink[] }
-  | { title: string; kind: 'coaching' };
+  | { title: string; kind: 'coaching' }
+  | { title: string; kind: 'settings' };
 
 export const NAV_GROUPS: NavGroup[] = [
   { title: '프로그램', kind: 'links', links: [{ href: '/program/overview', label: '프로그램 개요', icon: 'home' }] },
@@ -81,6 +82,8 @@ export const NAV_GROUPS: NavGroup[] = [
   { title: '대시보드', kind: 'links', links: [{ href: '/dashboard', label: '프로그램 현황', icon: 'chart' }] },
   { title: '코치 도구', kind: 'links', links: [{ href: '/tools', label: '코칭 툴 나눔터', icon: 'globe' }] },
   { title: '자료', kind: 'links', links: [{ href: '/references', label: '참조 자료실', icon: 'book' }] },
+  // 설정은 맨 아래 — 하위에 로그아웃만 둔다 (DEC-032)
+  { title: '설정', kind: 'settings' },
 ];
 
 // 대시보드는 하위 주소(/dashboard/[programId])에서도 같은 메뉴를 강조한다

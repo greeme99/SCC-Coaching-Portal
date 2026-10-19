@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // TC-001 ~ TC-005, TC-016 (docs/development/07.test-plan.md)
 test.describe('앱 셸·사이드바', () => {
-  test('TC-001 1440px: 사이드바 펼침, 6묶음 순서', async ({ page }) => {
+  test('TC-001 1440px: 사이드바 펼침, 7묶음 순서', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/dashboard');
     const nav = page.getByRole('navigation', { name: '주 메뉴' });
@@ -14,6 +14,7 @@ test.describe('앱 셸·사이드바', () => {
       '대시보드',
       '코치 도구',
       '자료',
+      '설정',
     ]);
     await expect(nav.getByRole('link', { name: '프로그램 현황' })).toHaveAttribute('aria-current', 'page');
   });
