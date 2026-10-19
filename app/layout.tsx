@@ -1,16 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import localFont from 'next/font/local';
 import { AppShell } from '@/components/AppShell';
-import './globals.css';
-
 // 한글 기본 폰트 Pretendard (DEC-010). npm 패키지의 파일을 빌드에 포함해 자체 호스팅한다
-const pretendard = localFont({
-  src: '../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2',
-  variable: '--font-pretendard',
-  weight: '45 920',
-  display: 'swap',
-});
+// 통짜 파일(2MB)은 휴대폰에서 첫 화면을 크게 늦춰서(LCP 약 12초, TC-050) 글자 범위별로 나뉜 파일을 쓴다 — 화면에 쓰인 글자 묶음만 내려받는다
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: { default: '삼코동 코칭 포털', template: '%s · 삼코동 코칭 포털' },
@@ -26,7 +20,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ko" data-theme="light" className={pretendard.variable}>
+    <html lang="ko" data-theme="light">
       <body className="font-sans antialiased">
         <AppShell>{children}</AppShell>
       </body>
